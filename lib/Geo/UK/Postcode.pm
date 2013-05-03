@@ -1,14 +1,5 @@
 package Geo::UK::Postcode;
 
-use Moo;
-
-has raw => ( is => 'ro' );
-
-has components => (
-    is      => 'rwp',
-    default => sub { {} },
-);
-
 =pod
 
 =head1 NAME
@@ -44,17 +35,60 @@ http://en.wikipedia.org/
 
 =cut
 
-# FIXME
-#[ABDEFGHJLNPQRSTUWXYZ]
+use Moo;
+
+has raw => ( is => 'ro' );
+
+has components => (
+    is      => 'rwp',
+    default => sub { {} },
+);
+
+# ABCDEFGHIJKLMNOPQRSTUVWXYZ
+my $AREA1       = 'ABCDEFGHIJKLMNOPRSTUWYZ';    # [^QVX]
+my $AREA2       = 'ABCDEFGHKLMNOPQRSTUVWXY';    # [^IJZ]
+my $SUBDISTRICT = 'ABCDEFGHJKMNPRSTUVWXY';      # [^ILOQ]
+my $UNIT        = 'ABDEFGHJLNPQRSTUWXYZ';       # [^CIKMOV]
+
+my %REGEXES = (
+    loose => {
+        area     => qr/[A-Z]{1,2}/,
+        district => qr/[1-9](?:[0-9]|[A-Z])/,
+        sector   => qr/\d/,
+        unit     => qr/[A-Z]{2}/,
+    },
+    strict => {
+        area     => qr/[$AREA1][$AREA2]/,
+        district => qr/[1-9](?:[0-9][$SUBDISTRICT])/,
+        unit     => qr/[$UNIT]/,
+    },
+);
 
 =head1 CLASS METHODS
+
+=head2 loose_regex
+
+=cut
+
+sub loose_regex {
+    my $re = $REGEXES{loose};
+    return qr{
+        ^
+        ($re->{area})
+        ($re->{district})
+        \s*
+        ($re->{sector})
+        ($re->{unit})
+        $}x;
+}
 
 =head2 parse
 
     my $parsed = Geo::UK::Postcode->parse( "AA11 1AA" );
 
-Returns hashref of the constituent parts, parsed from a loosely valid postcode(
-only the structure is 
+Returns hashref of the constituent parts.
+
+TODO
 
 =cut
 
@@ -122,6 +156,22 @@ sub outward { shift->outcode }
 sub inward  { shift->incode }
 
 sub fixed_format { sprintf( "%*s %s", -4, $_[0]->outcode, $_[0]->incode ) }
+
+=head1 SEE ALSO
+
+=over
+
+=item Geo::Postcode
+
+=item Data::Validation::Constraints::Postcode
+
+=item CGI::Untaint::uk_postcode
+
+=item Form::Validator::UKPostcode 
+
+=back
+
+=cut
 
 1;
 

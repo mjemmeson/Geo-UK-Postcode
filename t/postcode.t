@@ -4,50 +4,17 @@ use Test::Most;
 
 use Geo::UK::Postcode;
 
+use lib 't/lib';
+use TestGeoUKPostcode;
+
 my $pkg = 'Geo::UK::Postcode';
 
 dies_ok { $pkg->new() } "dies with no argument";
 
-my @tests = (
-    {   raw          => 'ab1 2cd',
-        area         => 'AB',
-        district     => '1',
-        subdistrict  => undef,
-        sector       => '2',
-        unit         => 'CD',
-        outcode      => 'AB1',
-        incode       => '2CD',
-        fixed_format => 'AB1  2CD',
-    },
-    {   raw          => 'wc1h 9eb',
-        area         => 'WC',
-        district     => '1',
-        subdistrict  => 'H',
-        sector       => '9',
-        unit         => 'EB',
-        outcode      => 'WC1H',
-        incode       => '9EB',
-        fixed_format => 'WC1H 9EB',
-    },
-);
+foreach my $test ( TestGeoUKPostcode->test_pcs( { valid => 1 } ) ) {
 
-foreach my $test (@tests) {
-
-    my $raw = $test->{raw};
-
-    test_pc( { %{$test}, raw => $raw } );
-    test_pc( { %{$test}, raw => uc $raw } );
-
-    $raw =~ s/ /  /;
-
-    test_pc( { %{$test}, raw => $raw } );
-    test_pc( { %{$test}, raw => uc $raw } );
-
-    ( $raw = $test->{raw} ) =~ s/\s//g;
-
-    test_pc( { %{$test}, raw => $raw } );
-    test_pc( { %{$test}, raw => uc $raw } );
-
+    test_pc( { %{$test}, raw => $_ } )
+        foreach TestGeoUKPostcode->get_format_list( $test->{raw} );
 }
 
 sub test_pc {
