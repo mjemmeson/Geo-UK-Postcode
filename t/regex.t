@@ -9,17 +9,18 @@ use TestGeoUKPostcode;
 
 my $pkg = 'Geo::UK::Postcode';
 
-#ok my $re = $pkg->regex, "regex";
+ok my $re       = $pkg->regex,       "regex";
 ok my $loose_re = $pkg->loose_regex, "loose_regex";
 
 foreach my $test ( TestGeoUKPostcode->test_pcs ) {
 
     foreach my $pc ( TestGeoUKPostcode->get_format_list( $test->{raw} ) ) {
+        note $pc;
 
-	
+        ok $pc =~ $loose_re, "$pc matches loose_regex";
+        ok $pc =~ $re,       "$pc matches strict regex";
 
     }
-
 
 }
 

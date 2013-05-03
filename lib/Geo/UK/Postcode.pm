@@ -51,36 +51,50 @@ my $SUBDISTRICT = 'ABCDEFGHJKMNPRSTUVWXY';      # [^ILOQ]
 my $UNIT        = 'ABDEFGHJLNPQRSTUWXYZ';       # [^CIKMOV]
 
 my %REGEXES = (
-    loose => {
-        area     => qr/[A-Z]{1,2}/,
-        district => qr/[1-9](?:[0-9]|[A-Z])/,
-        sector   => qr/\d/,
-        unit     => qr/[A-Z]{2}/,
-    },
     strict => {
         area     => qr/[$AREA1][$AREA2]/,
-        district => qr/[1-9](?:[0-9][$SUBDISTRICT])/,
-        unit     => qr/[$UNIT]/,
+        district => qr/[1-9](?:[0-9]|[$SUBDISTRICT])?/,
+        sector   => qr/[0-9]/,
+        unit     => qr/[$UNIT]{2}/,
+    },
+    loose => {
+        area     => qr/[A-Z]{1,2}/,
+        district => qr/[1-9](?:[0-9]|[A-Z])?/,
+        sector   => qr/[0-9]/,
+        unit     => qr/[A-Z]{2}/,
     },
 );
 
+my $STRICT_REGEX = qr{
+    ^
+    ($REGEXES{strict}->{area})
+    ($REGEXES{strict}->{district})
+    \s*
+    ($REGEXES{strict}->{sector})
+    ($REGEXES{strict}->{unit})
+    $
+}x;
+
+my $LOOSE_REGEX = qr{
+    ^
+    ($REGEXES{loose}->{area})
+    ($REGEXES{loose}->{district})
+    \s*
+    ($REGEXES{loose}->{sector})
+    ($REGEXES{loose}->{unit})
+    $
+}x;
+
 =head1 CLASS METHODS
+
+=head2 regex
 
 =head2 loose_regex
 
 =cut
 
-sub loose_regex {
-    my $re = $REGEXES{loose};
-    return qr{
-        ^
-        ($re->{area})
-        ($re->{district})
-        \s*
-        ($re->{sector})
-        ($re->{unit})
-        $}x;
-}
+sub regex       {$STRICT_REGEX}
+sub loose_regex {$LOOSE_REGEX}
 
 =head2 parse
 

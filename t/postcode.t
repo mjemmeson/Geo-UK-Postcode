@@ -15,6 +15,9 @@ foreach my $test ( TestGeoUKPostcode->test_pcs( { valid => 1 } ) ) {
 
     test_pc( { %{$test}, raw => $_ } )
         foreach TestGeoUKPostcode->get_format_list( $test->{raw} );
+
+    test_pc( { %{$test}, raw => lc $_ } )
+        foreach TestGeoUKPostcode->get_format_list( $test->{raw} );
 }
 
 sub test_pc {

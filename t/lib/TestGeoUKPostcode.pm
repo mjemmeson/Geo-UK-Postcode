@@ -43,14 +43,16 @@ sub test_pcs {
 sub get_format_list {
     my ( $class, $pc ) = @_;
 
-    my @list;
-    foreach ( $pc, lc $pc ) {
-        push @list, $_;
-        s/ /  /;
-        push @list, $_;
-        s/ //g;
-        push @list, $_;
-    }
+    my $tmp = $pc;
+
+    my @list = ($tmp);
+    
+    $tmp =~ s/ /  /;
+    push @list, $tmp;
+
+    $tmp =~ s/ //g;
+    push @list, $tmp;
+
     return @list;
 }
 
