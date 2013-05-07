@@ -2,9 +2,9 @@
 
 use Test::Most;
 
-use Geo::UK::Postcode;
+use Geo::UK::Postcode::Regex;
 
-my $pkg = 'Geo::UK::Postcode';
+my $pkg = 'Geo::UK::Postcode::Regex';
 
 note "parse";
 
@@ -82,3 +82,4 @@ foreach my $pc ( sort keys %tests ) {
 }
 
 done_testing();
+
