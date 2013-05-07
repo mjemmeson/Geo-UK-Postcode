@@ -45,11 +45,13 @@ my @AREAS = qw/
 
 my @AREAS_SINGLE_DIGIT = qw/ BR FY HA HD HG HR HS HX JE LD SM SR WC WN ZE /;
 my @AREAS_DOUBLE_DIGIT = qw/ AB LL SO /;
+
+#    Areas with a district '0' (zero): BL, BS, CM, CR, FY, HA, PR, SL, SS (BS is the only area to have #both a district 0 and a district 10).
+
  
 my @AREAS_SUBDISTRICT_ONLY = qw/ EC1 EC2 EC3 EC4 SW1 W1 WC1 WC2 /;
 my @AREAS_SUBDISTRICY_POSSIBLE = qw/ E1 /;
 
-#    Areas with a district '0' (zero): BL, BS, CM, CR, FY, HA, PR, SL, SS (BS is the only area to have #both a district 0 and a district 10).
 #    The following central London single-digit districts have been further divided by inserting a lette#r after the digit and before the space: EC1–EC4 (but not EC50), SW1, W1, WC1, WC2, and part of E1 (E1W#), N1 (N1C and N1P), NW1 (NW1W) and SE1 (SE1P).
 #    Post code sectors use digits from 1 to 9 followed by 0 (the Royal Mail originally sorted sector 0 #after 9, treating it as the 10th not the 1st sector label).
 
