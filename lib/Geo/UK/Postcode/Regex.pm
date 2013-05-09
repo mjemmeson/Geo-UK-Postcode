@@ -1,15 +1,13 @@
 package Geo::UK::Postcode::Regex;
 
-use strict;
-use warnings;
-
-=head1 NAME
-
-Geo::UK::Postcode::Regex - regular expressions for handling British postcodes
+# ABSTRACT: regular expressions for handling British postcodes
 
 =head1 DESCRIPTION
 
 =cut
+
+use strict;
+use warnings;
 
 # ABCDEFGHIJKLMNOPQRSTUVWXYZ
 my $AREA1       = 'ABCDEFGHIJKLMNOPRSTUWYZ';    # [^QVX]

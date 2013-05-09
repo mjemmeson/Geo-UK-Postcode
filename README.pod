@@ -1,0 +1,47 @@
+=pod
+
+=head1 SYNOPSIS
+
+    # Class methods:
+
+    # break postcode string into components
+    my $parsed = Geo::UK::Postcode->parse( $pc_str ) or die "Invalid format";
+
+    # check postcode string is valid postcode
+    if (Geo::UK::Postcode->is_valid( $pc_str )) {
+        ...
+    }
+
+    # Using as object:
+
+    my $pc = Geo::UK::Postcode->new("AB1 2CD");
+    $pc->area;        # AB
+    $pc->district;    # 1
+    $pc->sector;      # 2
+    $pc->unit;        # CD
+    $pc->outward;     # AB1
+    $pc->inward;      # 2CD
+
+=head1 DESCRIPTION
+
+# FIXME
+http://en.wikipedia.org/
+
+=head1 CLASS METHODS
+
+=head2 parse
+
+=head1 SEE ALSO
+
+=over
+
+=item Geo::Postcode
+
+=item Data::Validation::Constraints::Postcode
+
+=item CGI::Untaint::uk_postcode
+
+=item Form::Validator::UKPostcode 
+
+=back
+

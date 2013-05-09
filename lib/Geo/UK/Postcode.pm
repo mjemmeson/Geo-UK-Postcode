@@ -5,10 +5,6 @@ use Geo::UK::Postcode::Regex;
 
 =pod
 
-=head1 NAME
-
-Geo::UK::Postcode - Object and class methods for working with British postcodes
-
 =head1 SYNOPSIS
 
     # Class methods:
@@ -37,6 +33,10 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes
 http://en.wikipedia.org/
 
 =cut
+
+# VERSION
+
+# ABSTRACT: Object and class methods for working with British postcodes.
 
 has raw => ( is => 'ro' );
 
