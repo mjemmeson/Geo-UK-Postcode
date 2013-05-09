@@ -46,8 +46,7 @@ foreach my $row (@rows) {
 
         } else {
 
-            #            my @d = split /,/, $c;
-            foreach ( map {trim} split /,/, $c ) {
+            foreach ( map {trim} split /,/, trim $c ) {
                 push @found,
                     {
                     district         => $_,
@@ -61,16 +60,32 @@ foreach my $row (@rows) {
 
     foreach my $f (@found) {
         my $district = $f->{district};
+
+        my ( $area, $digits ) = $district =~ m{^([A-Z]+)(\d+)}
+            or die "can't parse district";
+
         $districts{$district} ||= {
+	    district => $district,
+            area             => $area,
+            digits           => $digits,
+            post_town        => [],
             non_geographical => $f->{non_geographical},
-            post_town        => []
         };
+
         push @{ $districts{$district}->{post_town} }, $f->{post_town};
     }
 
 }
 
-print Dumper( \%districts );
+foreach my $district (
+    sort { $a->{area} cmp $b->{area} || $a->{digits} <=> $b->{digits} }
+    values %districts )
+{
+
+    printf "%s,%d,%s\n", $district->{district},
+        $district->{non_geographical},
+        join( ',', @{ $district->{post_town} } );
+}
 
 __END__
 <tr>
