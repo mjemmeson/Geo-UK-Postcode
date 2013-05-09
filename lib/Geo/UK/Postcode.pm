@@ -5,6 +5,8 @@ package Geo::UK::Postcode;
 # VERSION
 
 use Moo;
+use MooX::Aliases;
+
 use Geo::UK::Postcode::Regex;
 
 =pod
@@ -91,8 +93,8 @@ Aliases for C<outcode> and C<incode>.
 
 =cut
 
-sub outward { shift->outcode }
-sub inward  { shift->incode }
+alias outward => 'outcode';
+alias inward  => 'incode';
 
 =head2 fixed_format
 
@@ -114,6 +116,8 @@ sub parse { Geo::UK::Postcode::Regex->parse( @_[ 1, $#_ ] ) }
 =head1 SEE ALSO
 
 =over
+
+=item Geo::Address::Mail::UK
 
 =item Geo::Postcode
 

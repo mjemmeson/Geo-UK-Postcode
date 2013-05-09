@@ -2,21 +2,72 @@ package Geo::UK::Postcode::Regex;
 
 # ABSTRACT: regular expressions for handling British postcodes
 
+=head1 SYNOPSIS
+
+  use Geo::UK::Postcode::Regex;
+  
+  ## REGULAR EXPRESSIONS
+  
+  # As class methods:
+  my $strict_re = Geo::UK::Postcode::Regex->strict_regex;
+  my $strict_re = Geo::UK::Postcode::Regex->regex; # alternate name
+  my $loose_re  = Geo::UK::Postcode::Regex->loose_regex;
+  
+  ## PARSING
+  my $parsed = Geo::UK::Postcode::Regex->parse( "WC1H 9EB" );
+  # returns:
+  #   { area        => 'WC',
+  #     district    => '1',
+  #     subdistrict => 'H',
+  #     sector      => '9',
+  #     unit        => 'EB',
+  #   }
+  
+  # strict parsing (only valid characters):
+  ...->parse( $pc, { strict => 1 } )
+  
+  # valid outcodes only
+  ...->parse( $pc, { valid => 1 } )
+  
+  # match partial postcodes, e.g. 'WC1H', 'WC1H 9'
+  ...->parse( $pc, { partial => 1 } )  
+
+  ## EXTRACT OUTCODE
+  my $outcode = Geo::UK::Postcode::Regex->outcode( "AB101AA" );
+  # returns:
+  #   'AB10'
+  
+  ## POSTTOWNS
+  my (@posttowns) = Geo::UK::Postcode::Regex->posttowns( $pc );
+
 =head1 DESCRIPTION
+
+Parsing UK postcodes with regular expressions. This package can
+be used separately to avoid the overhead of loading any
+dependencies.
+
+Can handle partial postcodes (just the outcode or sector) and
+can test against valid characters and currently valid outcodes.
+
+Also can determine the posttown(s) from a postcode.
+
+Districts and post town information taken from:
+L<https://en.wikipedia.org/wiki/Postcode_districts>
 
 =cut
 
 use strict;
 use warnings;
 
-# ABCDEFGHIJKLMNOPQRSTUVWXYZ
+## REGULAR EXPRESSIONS
+
 my $AREA1       = 'ABCDEFGHIJKLMNOPRSTUWYZ';    # [^QVX]
 my $AREA2       = 'ABCDEFGHKLMNOPQRSTUVWXY';    # [^IJZ]
 my $SUBDISTRICT = 'ABCDEFGHJKMNPRSTUVWXY';      # [^ILOQ]
-my $UNIT1       = 'ABDEFGHJKSTUW';              # C?
+my $UNIT1       = 'ABDEFGHJKSTUW';              #
 my $UNIT2       = 'ABDEFGHJLNPQRSTUWXYZ';
 
-my %REGEXES = (
+my %COMPONENTS = (
     strict => {
         area     => qr/[$AREA1][$AREA2]?/,
         district => qr/[0-9](?:[0-9]|[$SUBDISTRICT])?/,
@@ -31,27 +82,20 @@ my %REGEXES = (
     },
 );
 
-my $STRICT_REGEX = qr{
-    ^
-    ($REGEXES{strict}->{area})
-    ($REGEXES{strict}->{district})
-    \s*
-    ($REGEXES{strict}->{sector})
-    ($REGEXES{strict}->{unit})
-    $
-}x;
+my $regex         = '^(%s)(%s)\s*(%s)(%s)$';
+my $regex_partial = '^(%s)(%s)\s*(?:(%s)(%s)?)?$';
 
-my $LOOSE_REGEX = qr{
-    ^
-    ($REGEXES{loose}->{area})
-    ($REGEXES{loose}->{district})
-    \s*
-    (?:
-       ($REGEXES{loose}->{sector})
-       ($REGEXES{loose}->{unit})?
-    )?
-    $
-}x;
+my ( $STRICT_REGEX, $LOOSE_REGEX ) =    #
+    map {qr/$_/}
+    map { sprintf( $regex, @{$_}{qw/ area district sector unit /} ) }
+    @COMPONENTS{qw/ strict loose /};
+
+my ( $STRICT_REGEX_PARTIAL, $LOOSE_REGEX_PARTIAL ) =    #
+    map {qr/$_/}
+    map { sprintf( $regex_partial, @{$_}{qw/ area district sector unit /} ) }
+    @COMPONENTS{qw/ strict loose /};
+
+## OUTCODE AND POSTTOWN DATA
 
 my ( @OUTCODE_DATA, %POSTTOWNS, %OUTCODES );
 
@@ -95,14 +139,37 @@ sub _outcodes {
 
 =head1 METHODS
 
+=head2 strict_regex, loose_regex
+
+Return regular expressions to parse postcodes and capture the
+constituent parts (area, district, sector and unit).
+
+The strict regex
+
 =head2 regex
 
-=head2 loose_regex
+An alias for C<strict_regex>
 
 =cut
 
-sub regex       {$STRICT_REGEX}
-sub loose_regex {$LOOSE_REGEX}
+sub loose_regex  { $LOOSE_REGEX  }
+sub strict_regex { $STRICT_REGEX }
+sub regex        { $STRICT_REGEX }
+
+=head2 strict_regex_partial, loose_regex_partial
+
+As above, but matches on partial postcodes of just the outcode
+or sector
+
+=head2 regex_partial
+
+An alias for C<strict_regex_partial>
+
+=cut
+
+sub loose_regex_partial  { $LOOSE_REGEX_PARTIAL  }
+sub strict_regex_partial { $STRICT_REGEX_PARTIAL }
+sub regex_partial        { $STRICT_REGEX_PARTIAL }
 
 =head2 parse
 
@@ -131,13 +198,19 @@ Allows partial postcodes to be matched. In practice this means either an outcode
 
 =cut
 
-    sub parse {
+sub parse {
     my ( $class, $string, $options ) = @_;
 
     $options ||= {};
 
-    my $re = $options->{strict} || $options->{valid}    #
-        ? $STRICT_REGEX : $LOOSE_REGEX;
+    my $strict = $options->{strict} || $options->{valid};
+
+    my $re;
+    if ($strict) {
+        $re = $options->{partial} ? $STRICT_REGEX_PARTIAL : $STRICT_REGEX;
+    } else {
+        $re = $options->{partial} ? $LOOSE_REGEX_PARTIAL : $LOOSE_REGEX;
+    }
 
     my ( $area, $district, $sector, $unit ) = $string =~ $re
         or return;
@@ -173,7 +246,7 @@ Second argument is a hashref of options - see C<parse()>
 sub outcode {
     my ( $class, $string, $options ) = @_;
 
-    my $parsed = $class->parse( $string, { %{$options}, partial => 1 } )
+    my $parsed = $class->parse( $string, { %{ $options || {} }, partial => 1 } )
         or return;
 
     return $parsed->{area} . $parsed->{district};
