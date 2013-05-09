@@ -118,11 +118,10 @@ sub _posttowns {
                 foreach @{$line}[ 2 .. $#{$line} ];
         }
     }
-
     return \%POSTTOWNS;
 }
 
-sub _outcodes {
+sub outcodes {
     my $class = shift;
     unless (%OUTCODES) {
         foreach my $line ( @{ $class->_outcode_data } ) {
@@ -218,7 +217,7 @@ sub parse {
     return unless $unit || $options->{partial};
 
     if ( $options->{valid} ) {
-        return unless $class->_outcodes->{ $area . $district };
+        return unless $class->outcodes->{ $area . $district };
     }
 
     my $subdistrict = $district =~ s/([A-Z])$// ? $1 : undef;
@@ -266,7 +265,7 @@ two posttowns.
 sub posttowns {
     my ( $class, $string ) = @_;
 
-    my $data = $class->_outcodes->{ $class->outcode($string) };
+    my $data = $class->outcodes->{ $class->outcode($string) };
 
     return @{ $data ? $data->{posttowns} : [] };
 }

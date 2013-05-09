@@ -41,6 +41,7 @@
       "runtime" : {
          "requires" : {
             "Moo" : "0",
+            "MooX::Aliases" : "0",
             "perl" : "5.006",
             "strict" : "0",
             "warnings" : "0"
