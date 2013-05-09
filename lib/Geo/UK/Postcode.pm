@@ -1,5 +1,9 @@
 package Geo::UK::Postcode;
 
+# ABSTRACT: Object and class methods for working with British postcodes.
+
+# VERSION
+
 use Moo;
 use Geo::UK::Postcode::Regex;
 
@@ -7,36 +11,16 @@ use Geo::UK::Postcode::Regex;
 
 =head1 SYNOPSIS
 
-    # Class methods:
-
-    # break postcode string into components
-    my $parsed = Geo::UK::Postcode->parse( $pc_str ) or die "Invalid format";
-
-    # check postcode string is valid postcode
-    if (Geo::UK::Postcode->is_valid( $pc_str )) {
-        ...
-    }
-
-    # Using as object:
-
-    my $pc = Geo::UK::Postcode->new("AB1 2CD");
-    $pc->area;        # AB
-    $pc->district;    # 1
-    $pc->sector;      # 2
-    $pc->unit;        # CD
-    $pc->outward;     # AB1
-    $pc->inward;      # 2CD
+# TODO
 
 =head1 DESCRIPTION
 
-# FIXME
-http://en.wikipedia.org/
+An attempt to make a useful package for dealing with UK Postcodes.
+
+Currently in development - feedback welcome.
 
 =cut
 
-# VERSION
-
-# ABSTRACT: Object and class methods for working with British postcodes.
 
 has raw => ( is => 'ro' );
 
@@ -44,12 +28,6 @@ has components => (
     is      => 'rwp',
     default => sub { {} },
 );
-
-sub area        { shift->components->{area} }
-sub district    { shift->components->{district} }
-sub subdistrict { shift->components->{subdistrict} }
-sub sector      { shift->components->{sector} }
-sub unit        { shift->components->{unit} }
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -72,6 +50,32 @@ sub BUILD {
     $self->_set_components($parsed);
 }
 
+=head1 METHODS
+
+=head2 area, district, subdistrict, sector, unit
+
+Return the corresponding part of the postcde.
+
+=cut
+
+sub area        { shift->components->{area} }
+sub district    { shift->components->{district} }
+sub subdistrict { shift->components->{subdistrict} }
+sub sector      { shift->components->{sector} }
+sub unit        { shift->components->{unit} }
+
+=head2 outcode
+
+The first half of the postcode, before the space - comprises of the area and
+district.
+
+=head2 incode
+
+The second half of the postcode, after the space - comprises of the sector
+and unit.
+
+=cut
+
 sub outcode {
     sprintf( "%s%s%s",
         $_[0]->area, $_[0]->district, $_[0]->subdistrict || '' );
@@ -81,8 +85,21 @@ sub incode {
     $_[0]->sector . $_[0]->unit;
 }
 
+=head2 outward, inward
+
+Aliases for C<outcode> and C<incode>.
+
+=cut
+
 sub outward { shift->outcode }
 sub inward  { shift->incode }
+
+=head2 fixed_format
+
+Returns the full postcode in a fixed length (8 character) format, with extra
+padding spaces inserted as necessary.
+
+=cut
 
 sub fixed_format { sprintf( "%*s %s", -4, $_[0]->outcode, $_[0]->incode ) }
 

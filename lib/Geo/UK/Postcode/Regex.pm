@@ -18,10 +18,10 @@ my $UNIT2       = 'ABDEFGHJLNPQRSTUWXYZ';
 
 my %REGEXES = (
     strict => {
-        area     => qr/[$AREA1][$AREA2]/,
+        area     => qr/[$AREA1][$AREA2]?/,
         district => qr/[0-9](?:[0-9]|[$SUBDISTRICT])?/,
         sector   => qr/[0-9]/,
-        unit     => qr/[$UNIT1][$UNIT2]{2}/,
+        unit     => qr/[$UNIT1][$UNIT2]/,
     },
     loose => {
         area     => qr/[A-Z]{1,2}/,
@@ -46,8 +46,10 @@ my $LOOSE_REGEX = qr{
     ($REGEXES{loose}->{area})
     ($REGEXES{loose}->{district})
     \s*
-    ($REGEXES{loose}->{sector})
-    ($REGEXES{loose}->{unit})
+    (?:
+       ($REGEXES{loose}->{sector})
+       ($REGEXES{loose}->{unit})?
+    )?
     $
 }x;
 
@@ -104,23 +106,45 @@ sub loose_regex {$LOOSE_REGEX}
 
 =head2 parse
 
-    my $parsed = Geo::UK::Postcode::Regex->parse( "AA11 1AA" );
+    my $parsed = Geo::UK::Postcode::Regex->parse( $pc, \%opts );
 
 Returns hashref of the constituent parts.
 
+Options:
+
+=over
+
+=item strict
+
+Returns false if string contains invalid characters (e.g. a Q as first letter)
+
+=item valid
+
+Returns false if string is not a currently existing outcode.
+
+=item partial
+
+Allows partial postcodes to be matched. In practice this means either an outcode
+( area and district ) or an outcode together with the sector .
+
+=back
+
 =cut
 
-sub parse {
+    sub parse {
     my ( $class, $string, $options ) = @_;
 
     $options ||= {};
 
-    my $re = $options->{strict} ? $STRICT_REGEX : $LOOSE_REGEX;
+    my $re = $options->{strict} || $options->{valid}    #
+        ? $STRICT_REGEX : $LOOSE_REGEX;
 
     my ( $area, $district, $sector, $unit ) = $string =~ $re
         or return;
 
-    if ( $options->{valid_outcode} ) {
+    return unless $unit || $options->{partial};
+
+    if ( $options->{valid} ) {
         return unless $class->_outcodes->{ $area . $district };
     }
 
@@ -135,19 +159,24 @@ sub parse {
     };
 }
 
+=head2 outcode
+
+    my $outcode = Geo::UK::Postcode::Regex->outcode( $pc, \%opts );
+
+Extract the outcode (area and district) from a postcode string. Will work on
+full or partial postcodes.
+
+Second argument is a hashref of options - see C<parse()>
+
+=cut
+
 sub outcode {
-    my ( $class, $string ) = @_;
+    my ( $class, $string, $options ) = @_;
 
-    my $parsed = $class->parse($string);
+    my $parsed = $class->parse( $string, { %{$options}, partial => 1 } )
+        or return;
 
-    my $outcode;
-    if ($parsed) {
-        $outcode = $parsed->{area} . $parsed->{district};
-    } else {
-        ($outcode) = split ' ', $string;
-    }
-
-    return $outcode;
+    return $parsed->{area} . $parsed->{district};
 }
 
 =head2 posttowns
@@ -164,7 +193,7 @@ two posttowns.
 sub posttowns {
     my ( $class, $string ) = @_;
 
-    my $data = $class->_outcode_lookup->{ $class->outcode($string) };
+    my $data = $class->_outcodes->{ $class->outcode($string) };
 
     return @{ $data ? $data->{posttowns} : [] };
 }
