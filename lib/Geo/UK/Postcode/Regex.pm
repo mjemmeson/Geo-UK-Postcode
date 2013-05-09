@@ -53,42 +53,44 @@ my $LOOSE_REGEX = qr{
     $
 }x;
 
-my ( @OUTCODE_DATA, %POSTTOWN_LOOKUP, %OUTCODE_LOOKUP );
+my ( @OUTCODE_DATA, %POSTTOWNS, %OUTCODES );
 
 sub _outcode_data {
+    my $class = shift;
     unless (@OUTCODE_DATA) {
-	while (<DATA>) {
-	    chomp;
-	    push @OUTCODE_DATA, [ split /,/, $_ ];
-	}
+        while (<DATA>) {
+            chomp;
+            push @OUTCODE_DATA, [ split /,/, $_ ] if /\w/;
+        }
     }
     return \@OUTCODE_DATA;
 }
 
-sub _posttown_lookup {
+sub _posttowns {
     my $class = shift;
-    unless (%POSTTOWN_LOOKUP) {
+    unless (%POSTTOWNS) {
         foreach my $line ( @{ $class->_outcode_data } ) {
-            push @{ $POSTTOWN_LOOKUP{$_} }, $line->[0]
+            push @{ $POSTTOWNS{$_} }, $line->[0]
                 foreach @{$line}[ 2 .. $#{$line} ];
         }
     }
 
-    return \%POSTTOWN_LOOKUP;
+    return \%POSTTOWNS;
 }
 
-sub _outcode_lookup {
+sub _outcodes {
     my $class = shift;
-    unless (%OUTCODE_LOOKUP) {
+    unless (%OUTCODES) {
         foreach my $line ( @{ $class->_outcode_data } ) {
-            $OUTCODE_LOOKUP{ $line->[0] } = {
+
+            $OUTCODES{ $line->[0] } = {
                 posttowns => [ @{$line}[ 2 .. $#{$line} ] ],
                 $line->[1] ? ( non_geographical => 1 ) : (),
             };
         }
     }
 
-    return \%OUTCODE_LOOKUP;
+    return \%OUTCODES;
 }
 
 =head1 METHODS
@@ -111,10 +113,18 @@ Returns hashref of the constituent parts.
 =cut
 
 sub parse {
-    my ( $class, $string ) = @_;
+    my ( $class, $string, $options ) = @_;
 
-    my ( $area, $district, $sector, $unit ) = $string =~ $LOOSE_REGEX
+    $options ||= {};
+
+    my $re = $options->{strict} ? $STRICT_REGEX : $LOOSE_REGEX;
+
+    my ( $area, $district, $sector, $unit ) = $string =~ $re
         or return;
+
+    if ( $options->{valid_outcode} ) {
+        return unless $class->_outcodes->{ $area . $district };
+    }
 
     my $subdistrict = $district =~ s/([A-Z])$// ? $1 : undef;
 
@@ -127,7 +137,7 @@ sub parse {
     };
 }
 
-sub parse_outcode {
+sub outcode {
     my ( $class, $string ) = @_;
 
     my $parsed = $class->parse($string);
@@ -156,7 +166,7 @@ two posttowns.
 sub posttowns {
     my ( $class, $string ) = @_;
 
-    my $data = $class->_outcode_lookup->{ $class->parse_outcode($string) };
+    my $data = $class->_outcode_lookup->{ $class->outcode($string) };
 
     return @{ $data ? $data->{posttowns} : [] };
 }
