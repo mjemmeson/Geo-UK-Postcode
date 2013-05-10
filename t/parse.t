@@ -7,8 +7,6 @@ use Geo::UK::Postcode::Regex;
 
 my $pkg = 'Geo::UK::Postcode::Regex';
 
-note "parse";
-
 my %tests = (
     'X'   => undef,
     'XX1' => {
@@ -19,7 +17,7 @@ my %tests = (
         unit        => undef,
         partial     => 1,
     },
-    'XX11'     => {
+    'XX11' => {
         area        => 'XX',
         district    => '11',
         subdistrict => undef,
@@ -27,7 +25,7 @@ my %tests = (
         unit        => undef,
         partial     => 1,
     },
-    'XX1X'     => {
+    'XX1X' => {
         area        => 'XX',
         district    => '1',
         subdistrict => 'X',
@@ -35,7 +33,7 @@ my %tests = (
         unit        => undef,
         partial     => 1,
     },
-    'XX1X1'    => {
+    'XX1X1' => {
         area        => 'XX',
         district    => '1',
         subdistrict => 'X',
@@ -122,6 +120,8 @@ my %tests = (
     },
 
 );
+
+note "parse";
 
 test_parse( \%tests );
 

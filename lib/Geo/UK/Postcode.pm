@@ -9,6 +9,8 @@ use MooX::Aliases;
 
 use Geo::UK::Postcode::Regex;
 
+use overload '""' => "as_string";
+
 =pod
 
 =head1 SYNOPSIS
@@ -27,7 +29,7 @@ See L<Geo::UK::Postcode::Regex> for more postcode parsing.
 
 has raw           => ( is => 'ro' );                  # Str
 has strict        => ( is => 'ro' );                  # Bool
-has allow_partial => ( is => 'ro', default => 0 );    # Bool
+has allow_partial => ( is => 'ro', default => 1 );    # Bool
 has components => (
     is      => 'rwp',
     default => sub { {} },
@@ -90,7 +92,7 @@ sub outcode {
 }
 
 sub incode {
-    $_[0]->sector . $_[0]->unit;
+    ( $_[0]->sector // '' ) . ( $_[0]->unit || '' );
 }
 
 =head2 outward, inward
@@ -111,7 +113,10 @@ padding spaces inserted as necessary.
 
 =cut
 
-sub fixed_format { sprintf( "%*s %s", -4, $_[0]->outcode, $_[0]->incode ) }
+# FIXME
+sub fixed_format {
+    sprintf( "%*s %*s", -4, -3, $_[0]->outcode, $_[0]->incode );
+}
 
 =head2 posttowns
 
@@ -135,8 +140,13 @@ the full postcode might still not exist.
 =cut
 
 sub is_valid {
-    
+
+    # FIXME
 }
+
+sub as_string { $_[0]->outcode . ' ' . $_[0]->incode }
+
+# TODO sort function
 
 =head1 SEE ALSO
 

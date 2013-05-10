@@ -35,6 +35,12 @@ sub test_pc {
     is $pc->inward,  $test->{incode},  'inward ok';
 
     is $pc->fixed_format, $test->{fixed_format}, "fixed format ok";
+
+    my $str = $test->{outcode} . ' ' . $test->{incode};
+    is $pc->as_string, $str, "as_string ok";
+
+    is "$pc", $str, "stringify ok";
+
 }
 
 done_testing();

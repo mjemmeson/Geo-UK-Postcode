@@ -26,6 +26,30 @@ my @TEST_PCS = (
         fixed_format => 'WC1H 9EB',
         valid        => 1,
     },
+    {   raw          => 'AB1',
+        area         => 'AB',
+        district     => '1',
+        subdistrict  => undef,
+        sector       => undef,
+        unit         => undef,
+        outcode      => 'AB1',
+        incode       => undef,
+        fixed_format => 'AB1     ',
+        valid        => 1,
+        partial      => 1,
+    },
+    {   raw          => 'WC1H 9',
+        area         => 'WC',
+        district     => '1',
+        subdistrict  => 'H',
+        sector       => '9',
+        unit         => undef,
+        outcode      => 'WC1H',
+        incode       => '9',
+        fixed_format => 'WC1H 9  ',
+        valid        => 1,
+        partial      => 1,
+    },
 );
 
 sub test_pcs {
@@ -46,7 +70,7 @@ sub get_format_list {
     my $tmp = $pc;
 
     my @list = ($tmp);
-    
+
     $tmp =~ s/ /  /;
     push @list, $tmp;
 
