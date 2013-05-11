@@ -106,9 +106,9 @@ my ( @OUTCODE_DATA, %POSTTOWNS, %OUTCODES );
 sub _outcode_data {
     my $class = shift;
     unless (@OUTCODE_DATA) {
-        while (<DATA>) {
-            chomp;
-            push @OUTCODE_DATA, [ split /,/, $_ ] if /\w/;
+        while (my $line = <DATA>) {
+            chomp $line;
+            push @OUTCODE_DATA, [ split /,/, $line ] if $line=~/\w/;
         }
     }
     return \@OUTCODE_DATA;
@@ -123,7 +123,6 @@ sub posttowns_lookup {
                 foreach @{$line}[ 2 .. $#{$line} ];
         }
     }
-
     return \%POSTTOWNS;
 }
 
@@ -168,7 +167,7 @@ sub regex_partial        { $REGEXES{loose}->{partial} }
 
 =head2 parse
 
-    my $parsed = Geo::UK::Postcode::Regex->parse( $pc, \%opts );
+  my $parsed = Geo::UK::Postcode::Regex->parse( $pc, \%opts );
 
 Returns hashref of the constituent parts.
 
@@ -187,38 +186,44 @@ Returns false if string is not a currently existing outcode.
 =item partial
 
 Allows partial postcodes to be matched. In practice this means either an outcode
-( area and district ) or an outcode together with the sector .
+(area and district) or an outcode together with the sector.
 
 =back
 
 =cut
 
-    sub parse {
+sub parse {
     my ( $class, $string, $options ) = @_;
 
     $options ||= {};
 
-    my $type = $options->{strict} || $options->{valid} ? 'strict' : 'loose';
     my $size = $options->{partial} ? 'partial' : 'full';
 
-    my ( $area, $district, $sector, $unit ) =    #
-        $string =~ $REGEXES{$type}->{$size}      #
+    my ( $area, $district, $sector, $unit )
+        = $string =~ $REGEXES{strict}->{$size};
+
+    
+
+    my $type = $options->{strict}  ? 'strict'  : 'loose';
+
         or return;
 
     return unless $unit || $options->{partial};
 
-    if ( $options->{valid} ) {
-        return unless $class->outcodes_lookup->{ $area . $district };
-    }
+    my $valid = $class->outcodes_lookup->{ $area . $district } ? 1 : 0;
+
+    return if $options->{valid} && !$valid;
 
     my $subdistrict = $district =~ s/([A-Z])$// ? $1 : undef;
 
     return {
-        area        => $area,
-        district    => $district,
-        subdistrict => $subdistrict,
-        sector      => $sector,
-        unit        => $unit,
+        area          => $area,
+        district      => $district,
+        subdistrict   => $subdistrict,
+        sector        => $sector,
+        unit          => $unit,
+        valid_outcode => $valid,
+        partial       => $unit ? 0 : 1,
     };
 }
 

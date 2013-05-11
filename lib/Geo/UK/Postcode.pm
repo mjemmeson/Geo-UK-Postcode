@@ -7,15 +7,37 @@ package Geo::UK::Postcode;
 use Moo;
 use MooX::Aliases;
 
+use base 'Exporter';
 use Geo::UK::Postcode::Regex;
 
 use overload '""' => "as_string";
+
+our @EXPORT_OK = qw/ pc_sort /;
 
 =pod
 
 =head1 SYNOPSIS
 
-# TODO
+  use Geo::UK::Postcode;
+  
+  my $pc = Geo::UK::Postcode->new( "WC1H 9EB" );
+  
+  $pc->area;           # WC
+  $pc->district;       # 1
+  $pc->subdistrict;    # H
+  $pc->sector;         # 9
+  $pc->unit;           # EB
+  
+  $pc->outcode;        # WC1H
+  $pc->incode;         # 9EB
+  
+  "$pc";               # stringifies to: WC1H 9EB
+  $pc->fixed_format;   # 8 characters, the incode always last three
+
+  # Sort Postcode objects:
+  use Geo::UK::Postcode qw/ pc_sort /;
+  
+  my @sorted_pcs = sort pc_sort @unsorted_pcs;
 
 =head1 DESCRIPTION
 
@@ -28,8 +50,6 @@ See L<Geo::UK::Postcode::Regex> for more postcode parsing.
 =cut
 
 has raw           => ( is => 'ro' );                  # Str
-has strict        => ( is => 'ro' );                  # Bool
-has allow_partial => ( is => 'ro', default => 1 );    # Bool
 has components => (
     is      => 'rwp',
     default => sub { {} },
@@ -50,6 +70,12 @@ sub BUILD {
 
     die "No raw postcode supplied" unless $self->raw;
 
+    my $pc = uc $self->raw;
+
+    my $parsed = Geo::UK::Postcode::Regex->parse(
+	$pc,
+{ partial => $self->
+
     my $parsed = Geo::UK::Postcode::Regex->parse(
         uc $self->raw,
         {   strict  => $self->strict,
@@ -60,11 +86,15 @@ sub BUILD {
     $self->_set_components($parsed);
 }
 
+sub build_partial {
+
+}
+
 =head1 METHODS
 
 =head2 area, district, subdistrict, sector, unit
 
-Return the corresponding part of the postcde.
+Return the corresponding part of the postcode, undef if not present.
 
 =cut
 
@@ -82,7 +112,7 @@ district.
 =head2 incode
 
 The second half of the postcode, after the space - comprises of the sector
-and unit.
+and unit. Returns an empty string if not present.
 
 =cut
 
@@ -113,9 +143,28 @@ padding spaces inserted as necessary.
 
 =cut
 
-# FIXME
 sub fixed_format {
-    sprintf( "%*s %*s", -4, -3, $_[0]->outcode, $_[0]->incode );
+    sprintf( "%-4s %-3s", $_[0]->outcode, $_[0]->incode );
+}
+
+=head2 valid
+
+=head2 partial
+
+=head2 strict
+
+=cut
+
+sub valid {
+    shift->components->{valid} && shift->components->{strict} ? 1 : 0;
+}
+
+sub partial {
+    shift->components->{partial} ? 1 : 0;
+}
+
+sub strict {
+    shift->components->{strict} ? 1 : 0;
 }
 
 =head2 posttowns
@@ -146,7 +195,23 @@ sub is_valid {
 
 sub as_string { $_[0]->outcode . ' ' . $_[0]->incode }
 
-# TODO sort function
+
+=head1 EXPORTABLE
+
+=head2 pc_sort
+
+    my @sorted_pcs = sort pc_sort @unsorted_pcs;
+
+Exportable sort function, sorts postcode objects
+
+=cut
+
+sub pc_sort($$) {
+           $_[0]->area cmp $_[1]->area
+        || $_[0]->district <=> $_[1]->district
+        || ( $_[0]->subdistrict || '' ) cmp( $_[1]->subdistrict || '' )
+        || ( $_[0]->incode || '' ) cmp( $_[1]->incode || '' );
+}
 
 =head1 SEE ALSO
 

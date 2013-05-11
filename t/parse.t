@@ -2,6 +2,7 @@
 
 use Test::Most;
 
+use Data::Dumper::Concise;
 use Clone qw/ clone /;
 use Geo::UK::Postcode::Regex;
 
@@ -53,11 +54,12 @@ my %tests = (
     },
 
     'AB10 1II' => {
-        area        => 'AB',
-        district    => '10',
-        subdistrict => undef,
-        sector      => '1',
-        unit        => 'II',
+        area          => 'AB',
+        district      => '10',
+        subdistrict   => undef,
+        sector        => '1',
+        unit          => 'II',
+        valid_outcode => 1,
     },
 
     # technically valid, but outcode doesn't exist
@@ -110,13 +112,13 @@ my %tests = (
         strict      => 1,
     },
     'AB10 1AA' => {
-        area        => 'AB',
-        district    => '10',
-        subdistrict => undef,
-        sector      => 1,
-        unit        => 'AA',
-        strict      => 1,
-        valid       => 1,
+        area          => 'AB',
+        district      => '10',
+        subdistrict   => undef,
+        sector        => 1,
+        unit          => 'AA',
+        strict        => 1,
+        valid_outcode => 1,
     },
 
 );
@@ -151,17 +153,23 @@ sub test_parse {
 
         my $expected = clone $tests{$pc};
 
-        my $strict  = $expected ? delete $expected->{strict}  : undef;
-        my $valid   = $expected ? delete $expected->{valid}   : undef;
-        my $partial = $expected ? delete $expected->{partial} : undef;
+        if ($expected) {
 
-        $expected = undef if $options->{strict}   && !$strict;
-        $expected = undef if $options->{valid}    && !$valid;
-        $expected = undef if !$options->{partial} && $partial;
+            my $strict = $expected ? delete $expected->{strict} : undef;
+
+            $expected->{valid_outcode} ||= 0;
+            $expected->{partial}       ||= 0;
+
+            $expected = undef    #
+                if ( $options->{strict} && !$strict
+                or $options->{valid} && !$expected->{valid_outcode}
+                or !$options->{partial} && $expected->{partial} );
+        }
 
         my $parsed = $pkg->parse( $pc, $options );
 
-        is_deeply $parsed, $expected, msg( $pc, $expected );
+        is_deeply $parsed, $expected, msg( $pc, $expected )
+            or warn Dumper($parsed);
 
         # and try without space
         $pc =~ s/\s//;
