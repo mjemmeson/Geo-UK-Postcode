@@ -1,9 +1,5 @@
 package Geo::UK::Postcode;
 
-# ABSTRACT: Object and class methods for working with British postcodes.
-
-# VERSION
-
 use Moo;
 use MooX::Aliases;
 
@@ -11,6 +7,10 @@ use base 'Exporter';
 use Geo::UK::Postcode::Regex;
 
 use overload '""' => "as_string";
+
+# ABSTRACT: Object and class methods for working with British postcodes.
+
+# VERSION
 
 our @EXPORT_OK = qw/ pc_sort /;
 
@@ -60,6 +60,10 @@ has components => (
     is      => 'rwp',
     default => sub { {} },
 );
+
+=for Pod::Coverage BUILDARGS BUILD
+
+=cut
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;

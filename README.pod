@@ -47,6 +47,8 @@ Currently in development - feedback welcome.
 
 See L<Geo::UK::Postcode::Regex> for more postcode parsing.
 
+=for Pod::Coverage BUILDARGS BUILD
+
 =head1 METHODS
 
 =head2 as_string

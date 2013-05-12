@@ -1,5 +1,8 @@
 package Geo::UK::Postcode::Regex;
 
+use strict;
+use warnings;
+
 # ABSTRACT: regular expressions for handling British postcodes
 
 # VERSION
@@ -55,9 +58,6 @@ Districts and post town information taken from:
 L<https://en.wikipedia.org/wiki/Postcode_districts>
 
 =cut
-
-use strict;
-use warnings;
 
 ## REGULAR EXPRESSIONS
 
@@ -290,6 +290,24 @@ sub posttown_to_outcodes {
 
     return @{ $class->posttowns_lookup->{ $posttown || '' } || [] };
 }
+
+=head2 outcodes_lookup
+
+    my %outcodes = %{ Geo::UK::Postcodes::Regex->outcodes_lookup };
+    print "valid outcode" if $outcodes{$outcode};
+    my @posttowns = @{ $outcodes{$outcode} };
+
+Hashref of outcodes to posttown(s);
+
+=head2 posttowns_lookup
+
+    my %posttowns = %{ Geo::UK::Postcodes::Regex->posttowns_lookup };
+    print "valid posttown" if $posttowns{$posttown};
+    my @outcodes = @{ $[posttowns{$posttown} };
+
+Hashref of posttown to outcode(s);
+
+=cut
 
 1;
 
