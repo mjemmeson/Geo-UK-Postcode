@@ -40,9 +40,12 @@
       },
       "runtime" : {
          "requires" : {
+            "Exporter" : "0",
             "Moo" : "0",
             "MooX::Aliases" : "0",
-            "perl" : "5.006",
+            "base" : "0",
+            "overload" : "0",
+            "perl" : "5.010",
             "strict" : "0",
             "warnings" : "0"
          }
@@ -50,6 +53,7 @@
       "test" : {
          "requires" : {
             "Clone" : "0",
+            "Data::Dumper::Concise" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Find" : "0",
             "File::Spec::Functions" : "0",
@@ -82,9 +86,6 @@
          "web" : "https://github.com/mjemmeson/geo-uk-postcode"
       }
    },
-   "version" : "0.001",
-   "x_contributors" : [
-      "Michael Jemmeson <michael.jemmeson@gmail.com>"
-   ]
+   "version" : "0.001"
 }
 

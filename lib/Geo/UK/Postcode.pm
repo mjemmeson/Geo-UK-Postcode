@@ -34,6 +34,10 @@ our @EXPORT_OK = qw/ pc_sort /;
   "$pc";               # stringifies to: WC1H 9EB
   $pc->fixed_format;   # 8 characters, the incode always last three
 
+  $pc->strict;     # true if matches strict regex
+  $pc->valid;      # true if matches strict regex and has a valid outcode
+  $pc->partial;    # true if postcode is for a district or sector only
+
   # Sort Postcode objects:
   use Geo::UK::Postcode qw/ pc_sort /;
   
@@ -43,13 +47,15 @@ our @EXPORT_OK = qw/ pc_sort /;
 
 An attempt to make a useful package for dealing with UK Postcodes.
 
+See L<Geo::UK::Postcode::Regex> for matching and parsing postcodes.
+
 Currently in development - feedback welcome.
 
 See L<Geo::UK::Postcode::Regex> for more postcode parsing.
 
 =cut
 
-has raw           => ( is => 'ro' );                  # Str
+has raw => ( is => 'ro' );    # Str
 has components => (
     is      => 'rwp',
     default => sub { {} },
@@ -72,25 +78,41 @@ sub BUILD {
 
     my $pc = uc $self->raw;
 
-    my $parsed = Geo::UK::Postcode::Regex->parse(
-	$pc,
-{ partial => $self->
-
-    my $parsed = Geo::UK::Postcode::Regex->parse(
-        uc $self->raw,
-        {   strict  => $self->strict,
-            partial => $self->allow_partial,
-        }
-    ) or die sprintf "Unable to parse '%s' as a postcode", $self->raw;
+    my $parsed = Geo::UK::Postcode::Regex->parse( $pc, { partial => 1 } )
+        or die sprintf "Unable to parse '%s' as a postcode", $self->raw ;
 
     $self->_set_components($parsed);
 }
 
-sub build_partial {
-
-}
-
 =head1 METHODS
+
+=head2 as_string
+
+  $pc->as_string;
+
+  # or:
+
+  "$pc";
+
+Stringification of postcode object, returns postcode with a single space
+between outcode and incode.
+
+=cut
+
+sub as_string { $_[0]->outcode . ' ' . $_[0]->incode }
+
+=head2 fixed_format
+
+    my $fixed_format = $postcode->fixed_format;
+
+Returns the full postcode in a fixed length (8 character) format, with extra
+padding spaces inserted as necessary.
+
+=cut
+
+sub fixed_format {
+    sprintf( "%-4s %-3s", $_[0]->outcode, $_[0]->incode );
+}
 
 =head2 area, district, subdistrict, sector, unit
 
@@ -134,24 +156,32 @@ Aliases for C<outcode> and C<incode>.
 alias outward => 'outcode';
 alias inward  => 'incode';
 
-=head2 fixed_format
-
-    my $fixed_format = $postcode->fixed_format;
-
-Returns the full postcode in a fixed length (8 character) format, with extra
-padding spaces inserted as necessary.
-
-=cut
-
-sub fixed_format {
-    sprintf( "%-4s %-3s", $_[0]->outcode, $_[0]->incode );
-}
-
 =head2 valid
+
+  if ($pc->valid) {
+    ...
+  }
+
+Returns true if postcode has valid outcode and matches strict regex.
 
 =head2 partial
 
+  if ($pc->partial) {
+    ...
+  }
+
+Returns true if postcode is not a full postcode, either a postcode district
+( e . g . AB10 )
+or postcode sector (e.g. AB10 1).
+
 =head2 strict
+
+  if ($pc->strict) {
+    ...
+  }
+
+Returns true if postcode matches strict regex, meaning all characters are valid
+(although postcode might not exist).
 
 =cut
 
@@ -176,24 +206,6 @@ Returns list of one or more posttowns that this postcode is assigned to.
 =cut
 
 sub posttowns { Geo::UK::Postcode::Regex->posttowns( $_[0]->outcode ) }
-
-=head2 is_valid
-
-    unless ($postcode->is_valid) {
-       print "$postcode does not have a valid outcode!";
-    }
-
-Returns true or false depending if the outcode is valid or not. Note that
-the full postcode might still not exist.
-
-=cut
-
-sub is_valid {
-
-    # FIXME
-}
-
-sub as_string { $_[0]->outcode . ' ' . $_[0]->incode }
 
 
 =head1 EXPORTABLE

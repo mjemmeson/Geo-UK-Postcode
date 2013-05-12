@@ -11,7 +11,7 @@ my $pkg = 'Geo::UK::Postcode';
 
 dies_ok { $pkg->new() } "dies with no argument";
 
-foreach my $test ( TestGeoUKPostcode->test_pcs( { valid => 1 } ) ) {
+foreach my $test ( TestGeoUKPostcode->test_pcs() ) {
 
     test_pc( { %{$test}, raw => $_ } )
         foreach TestGeoUKPostcode->get_format_list( $test->{raw} );
@@ -40,6 +40,11 @@ sub test_pc {
     is $pc->as_string, $str, "as_string ok";
 
     is "$pc", $str, "stringify ok";
+
+    foreach (qw/ strict valid partial /) {
+        is $pc->$_, $test->{$_} || 0,
+            $test->{$_} ? "postcode is $_" : "postcode isn't $_";
+    }
 
 }
 

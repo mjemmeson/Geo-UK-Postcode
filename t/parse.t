@@ -155,15 +155,14 @@ sub test_parse {
 
         if ($expected) {
 
-            my $strict = $expected ? delete $expected->{strict} : undef;
-
             $expected->{valid_outcode} ||= 0;
             $expected->{partial}       ||= 0;
+            $expected->{strict}        ||= 0;
 
             $expected = undef    #
-                if ( $options->{strict} && !$strict
-                or $options->{valid} && !$expected->{valid_outcode}
-                or !$options->{partial} && $expected->{partial} );
+                if $options->{strict}   && !$expected->{strict}
+                or $options->{valid}    && !$expected->{valid_outcode}
+                or !$options->{partial} && $expected->{partial};
         }
 
         my $parsed = $pkg->parse( $pc, $options );

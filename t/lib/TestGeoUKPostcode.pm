@@ -14,6 +14,7 @@ my @TEST_PCS = (
         incode       => '2CD',
         fixed_format => 'AB1  2CD',
         valid        => 0,
+        strict       => 0,
     },
     {   raw          => 'WC1H 9EB',
         area         => 'WC',
@@ -25,6 +26,7 @@ my @TEST_PCS = (
         incode       => '9EB',
         fixed_format => 'WC1H 9EB',
         valid        => 1,
+        strict       => 1,
     },
     {   raw          => 'AB1',
         area         => 'AB',
@@ -37,6 +39,7 @@ my @TEST_PCS = (
         fixed_format => 'AB1     ',
         valid        => 1,
         partial      => 1,
+        strict       => 1,
     },
     {   raw          => 'WC1H 9',
         area         => 'WC',
@@ -49,6 +52,7 @@ my @TEST_PCS = (
         fixed_format => 'WC1H 9  ',
         valid        => 1,
         partial      => 1,
+        strict       => 1,
     },
 );
 
@@ -61,7 +65,7 @@ sub test_pcs {
         @pcs = grep { $_->{$filter} == $args->{$filter} } @pcs;
     }
 
-    return @pcs;
+    return @pcs[0];
 }
 
 sub get_format_list {

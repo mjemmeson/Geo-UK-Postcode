@@ -2,6 +2,8 @@ package Geo::UK::Postcode::Regex;
 
 # ABSTRACT: regular expressions for handling British postcodes
 
+# VERSION
+
 =head1 SYNOPSIS
 
   use Geo::UK::Postcode::Regex;
@@ -186,7 +188,7 @@ Returns false if string is not a currently existing outcode.
 =item partial
 
 Allows partial postcodes to be matched. In practice this means either an outcode
-(area and district) or an outcode together with the sector.
+( area and district ) or an outcode together with the sector .
 
 =back
 
@@ -202,11 +204,16 @@ sub parse {
     my ( $area, $district, $sector, $unit )
         = $string =~ $REGEXES{strict}->{$size};
 
-    
+    my $strict = $area ? 1 : 0;
 
-    my $type = $options->{strict}  ? 'strict'  : 'loose';
+    unless ($strict) {
+        return if $options->{strict};
 
-        or return;
+        # try loose regex
+        ( $area, $district, $sector, $unit )
+            = $string =~ $REGEXES{loose}->{$size}
+            or return;
+    }
 
     return unless $unit || $options->{partial};
 
@@ -223,6 +230,7 @@ sub parse {
         sector        => $sector,
         unit          => $unit,
         valid_outcode => $valid,
+        strict        => $strict,
         partial       => $unit ? 0 : 1,
     };
 }
