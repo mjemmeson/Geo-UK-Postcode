@@ -169,7 +169,7 @@ sub regex_partial        { $REGEXES{loose}->{partial} }
 
 =head2 parse
 
-  my $parsed = Geo::UK::Postcode::Regex->parse( $pc, \%opts );
+    my $parsed = Geo::UK::Postcode::Regex->parse( $pc, \%opts );
 
 Returns hashref of the constituent parts.
 

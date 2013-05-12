@@ -27,10 +27,14 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.30"
+            "ExtUtils::MakeMaker" : "6.30",
+            "File::ShareDir::Install" : "0.03"
          }
       },
       "develop" : {
+         "recommends" : {
+            "HTML::TreeBuilder" : "0"
+         },
          "requires" : {
             "Pod::Coverage::TrustPod" : "0",
             "Test::CPAN::Meta" : "0",

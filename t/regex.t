@@ -31,7 +31,7 @@ foreach my $test ( TestGeoUKPostcode->test_pcs ) {
 
         ok $pc =~ $re_partial, "$pc matches loose regex partial";
 
-        if ( $test->{valid} ) {
+        if ( $test->{strict} ) {
             ok $pc =~ $strict_re_partial, "$pc matches strict regex partial";
         } else {
             ok $pc !~ $strict_re_partial,

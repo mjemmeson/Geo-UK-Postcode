@@ -37,7 +37,7 @@ my @TEST_PCS = (
         outcode      => 'AB1',
         incode       => '',
         fixed_format => 'AB1     ',
-        valid        => 1,
+        valid        => 0,
         partial      => 1,
         strict       => 1,
     },
@@ -65,7 +65,7 @@ sub test_pcs {
         @pcs = grep { $_->{$filter} == $args->{$filter} } @pcs;
     }
 
-    return @pcs[0];
+    return @pcs;
 }
 
 sub get_format_list {

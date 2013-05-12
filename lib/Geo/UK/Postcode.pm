@@ -181,20 +181,20 @@ or postcode sector (e.g. AB10 1).
   }
 
 Returns true if postcode matches strict regex, meaning all characters are valid
-(although postcode might not exist).
+( although postcode might not exist ) .
 
 =cut
 
 sub valid {
-    shift->components->{valid} && shift->components->{strict} ? 1 : 0;
+    $_[0]->components->{valid_outcode} && $_[0]->components->{strict} ? 1 : 0;
 }
 
 sub partial {
-    shift->components->{partial} ? 1 : 0;
+    $_[0]->components->{partial} ? 1 : 0;
 }
 
 sub strict {
-    shift->components->{strict} ? 1 : 0;
+    $_[0]->components->{strict} ? 1 : 0;
 }
 
 =head2 posttowns
@@ -205,8 +205,7 @@ Returns list of one or more posttowns that this postcode is assigned to.
 
 =cut
 
-sub posttowns { Geo::UK::Postcode::Regex->posttowns( $_[0]->outcode ) }
-
+    sub posttowns { Geo::UK::Postcode::Regex->posttowns( $_[0]->outcode ) }
 
 =head1 EXPORTABLE
 
