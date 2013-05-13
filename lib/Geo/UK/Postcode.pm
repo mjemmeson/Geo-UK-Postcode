@@ -232,15 +232,25 @@ sub pc_sort($$) {
 
 =over
 
-=item Geo::Address::Mail::UK
+=item *
 
-=item Geo::Postcode
+L<Geo::Address::Mail::UK>
 
-=item Data::Validation::Constraints::Postcode
+=item *
 
-=item CGI::Untaint::uk_postcode
+L<Geo::Postcode>
 
-=item Form::Validator::UKPostcode 
+=item *
+
+L<Data::Validation::Constraints::Postcode>
+
+=item *
+
+L<CGI::Untaint::uk_postcode>
+
+=item *
+
+L<Form::Validator::UKPostcode>
 
 =back
 
