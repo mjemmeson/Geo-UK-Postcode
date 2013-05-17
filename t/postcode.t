@@ -41,7 +41,7 @@ sub test_pc {
 
     is "$pc", $str, "stringify ok";
 
-    foreach (qw/ strict valid partial /) {
+    foreach (qw/ strict valid partial non_geographical /) {
         is $pc->$_, $test->{$_} || 0,
             $test->{$_} ? "postcode is $_" : "postcode isn't $_";
     }

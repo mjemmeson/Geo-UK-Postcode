@@ -38,6 +38,9 @@ our @EXPORT_OK = qw/ pc_sort /;
   $pc->valid;      # true if matches strict regex and has a valid outcode
   $pc->partial;    # true if postcode is for a district or sector only
 
+  $pc->non_geographical;    # true if outcode is known to be
+                            # non-geographical
+
   # Sort Postcode objects:
   use Geo::UK::Postcode qw/ pc_sort /;
   
@@ -201,6 +204,24 @@ sub strict {
     $_[0]->components->{strict} ? 1 : 0;
 }
 
+=head2 non_geographical
+
+    if ($pc->non_geographical) {
+      ...
+    }
+
+Returns true if the outcode is known to be non-geographical. Note that
+geographical outcodes may have non-geographical postcodes within them.
+
+(Non-geographical postcodes are used for PO Boxes, or organisations
+receiving large amounts of post).
+
+=cut
+
+sub non_geographical {
+    $_[0]->components->{non_geographical} ? 1 : 0;
+}
+
 =head2 posttowns
 
     my (@posttowns) = $postcode->posttowns;
@@ -209,7 +230,7 @@ Returns list of one or more posttowns that this postcode is assigned to.
 
 =cut
 
-    sub posttowns { Geo::UK::Postcode::Regex->posttowns( $_[0]->outcode ) }
+sub posttowns { Geo::UK::Postcode::Regex->posttowns( $_[0]->outcode ) }
 
 =head1 EXPORTABLE
 
