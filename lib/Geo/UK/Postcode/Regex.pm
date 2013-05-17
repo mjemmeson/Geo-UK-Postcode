@@ -103,42 +103,36 @@ foreach my $type (qw/ strict loose /) {
 
 ## OUTCODE AND POSTTOWN DATA
 
-my ( @OUTCODE_DATA, %POSTTOWNS, %OUTCODES );
+my ( %POSTTOWNS, %OUTCODES );
 
 sub _outcode_data {
     my $class = shift;
-    unless (@OUTCODE_DATA) {
-        while (my $line = <DATA>) {
-            chomp $line;
-            push @OUTCODE_DATA, [ split /,/, $line ] if $line=~/\w/;
-        }
+    while ( my $line = <DATA> ) {
+        next unless $line =~ m/\w/;
+        chomp $line;
+        my ( $outcode, $non_geographical, @posttowns ) = split /,/, $line;
+
+        push @{ $POSTTOWNS{$_} }, $outcode foreach @posttowns;
+        $OUTCODES{$outcode} = {
+            posttowns        => \@posttowns,
+            non_geographical => $non_geographical,
+        };
     }
-    return \@OUTCODE_DATA;
 }
 
 sub posttowns_lookup {
     my $class = shift;
-    unless (%POSTTOWNS) {
-        foreach my $line ( @{ $class->_outcode_data } ) {
 
-            push @{ $POSTTOWNS{$_} }, $line->[0]
-                foreach @{$line}[ 2 .. $#{$line} ];
-        }
-    }
+    $class->_outcode_data() unless %POSTTOWNS;
+
     return \%POSTTOWNS;
 }
 
 sub outcodes_lookup {
     my $class = shift;
-    unless (%OUTCODES) {
-        foreach my $line ( @{ $class->_outcode_data } ) {
 
-            $OUTCODES{ $line->[0] } = {
-                posttowns => [ @{$line}[ 2 .. $#{$line} ] ],
-                $line->[1] ? ( non_geographical => 1 ) : (),
-            };
-        }
-    }
+    $class->_outcode_data() unless %OUTCODES;
+
     return \%OUTCODES;
 }
 
@@ -217,9 +211,9 @@ sub parse {
 
     return unless $unit || $options->{partial};
 
-    my $valid = $class->outcodes_lookup->{ $area . $district } ? 1 : 0;
+    my $outcode = $class->outcodes_lookup->{ $area . $district };
 
-    return if $options->{valid} && !$valid;
+    return if $options->{valid} && !$outcode;
 
     my $subdistrict = $district =~ s/([A-Z])$// ? $1 : undef;
 
@@ -229,9 +223,10 @@ sub parse {
         subdistrict   => $subdistrict,
         sector        => $sector,
         unit          => $unit,
-        valid_outcode => $valid,
+        valid_outcode => $outcode ? 1 : 0,
         strict        => $strict,
         partial       => $unit ? 0 : 1,
+        $outcode->{non_geographical} ? ( non_geographical => 1 ) : (),
     };
 }
 

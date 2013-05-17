@@ -120,6 +120,16 @@ my %tests = (
         strict        => 1,
         valid_outcode => 1,
     },
+    'AB99 1AA' => {
+        area             => 'AB',
+        district         => '99',
+        subdistrict      => undef,
+        sector           => 1,
+        unit             => 'AA',
+        strict           => 1,
+        valid_outcode    => 1,
+        non_geographical => 1,
+    },
 
 );
 
