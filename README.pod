@@ -8,7 +8,7 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -31,6 +31,9 @@ version 0.001
   $pc->strict;     # true if matches strict regex
   $pc->valid;      # true if matches strict regex and has a valid outcode
   $pc->partial;    # true if postcode is for a district or sector only
+
+  $pc->non_geographical;    # true if outcode is known to be
+                            # non-geographical
 
   # Sort Postcode objects:
   use Geo::UK::Postcode qw/ pc_sort /;
@@ -114,6 +117,18 @@ or postcode sector (e.g. AB10 1).
 Returns true if postcode matches strict regex, meaning all characters are valid
 ( although postcode might not exist ) .
 
+=head2 non_geographical
+
+    if ($pc->non_geographical) {
+      ...
+    }
+
+Returns true if the outcode is known to be non-geographical. Note that
+geographical outcodes may have non-geographical postcodes within them.
+
+(Non-geographical postcodes are used for PO Boxes, or organisations
+receiving large amounts of post).
+
 =head2 posttowns
 
     my (@posttowns) = $postcode->posttowns;
@@ -132,15 +147,25 @@ Exportable sort function, sorts postcode objects
 
 =over
 
-=item Geo::Address::Mail::UK
+=item *
 
-=item Geo::Postcode
+L<Geo::Address::Mail::UK>
 
-=item Data::Validation::Constraints::Postcode
+=item *
 
-=item CGI::Untaint::uk_postcode
+L<Geo::Postcode>
 
-=item Form::Validator::UKPostcode 
+=item *
+
+L<Data::Validation::Constraints::Postcode>
+
+=item *
+
+L<CGI::Untaint::uk_postcode>
+
+=item *
+
+L<Form::Validator::UKPostcode>
 
 =back
 

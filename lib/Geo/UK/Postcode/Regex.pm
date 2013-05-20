@@ -118,6 +118,14 @@ sub _outcode_data {
             non_geographical => $non_geographical,
         };
     }
+
+    # Add in BX non-geographical outcodes
+    foreach ( 1 .. 99 ) {
+        $OUTCODES{ 'BX' . $_ } = {
+            posttowns        => [],
+            non_geographical => 1,
+        };
+    }
 }
 
 sub posttowns_lookup {
@@ -182,7 +190,8 @@ Returns false if string is not a currently existing outcode.
 =item partial
 
 Allows partial postcodes to be matched. In practice this means either an outcode
-( area and district ) or an outcode together with the sector .
+( area and district )
+or an outcode together with the sector .
 
 =back
 

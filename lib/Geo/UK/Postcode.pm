@@ -287,6 +287,8 @@ L<Form::Validator::UKPostcode>
 
 =item Handle special case postcodes, like GIR 0AA and SAN TA1
 
+=item Find out which BX non-geographical districts are used.
+
 =back
 
 =cut

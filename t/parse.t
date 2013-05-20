@@ -115,7 +115,7 @@ my %tests = (
         area          => 'AB',
         district      => '10',
         subdistrict   => undef,
-        sector        => 1,
+        sector        => '1',
         unit          => 'AA',
         strict        => 1,
         valid_outcode => 1,
@@ -124,13 +124,22 @@ my %tests = (
         area             => 'AB',
         district         => '99',
         subdistrict      => undef,
-        sector           => 1,
+        sector           => '1',
         unit             => 'AA',
         strict           => 1,
         valid_outcode    => 1,
         non_geographical => 1,
     },
-
+    'BX99 1AA' => {
+        area             => 'BX',
+        district         => '99',
+        subdistrict      => undef,
+        sector           => '1',
+        unit             => 'AA',
+        strict           => 1,
+        valid_outcode    => 1,
+        non_geographical => 1,
+    },
 );
 
 note "parse";
