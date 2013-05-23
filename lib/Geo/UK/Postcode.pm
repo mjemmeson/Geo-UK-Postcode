@@ -20,7 +20,12 @@ our @EXPORT_OK = qw/ pc_sort /;
 
   use Geo::UK::Postcode;
   
-  my $pc = Geo::UK::Postcode->new( "WC1H 9EB" );
+  my $pc = Geo::UK::Postcode->new( "wc1h9eb" );
+  
+  $pc->raw;            # wc1h9eb - as entered
+  $pc->as_string;      # WC1H 9EB - output in correct format
+  "$pc";               # stringifies, same output as '->as_string'
+  $pc->fixed_format;   # 8 characters, the incode always last three
   
   $pc->area;           # WC
   $pc->district;       # 1
@@ -31,9 +36,6 @@ our @EXPORT_OK = qw/ pc_sort /;
   $pc->outcode;        # WC1H
   $pc->incode;         # 9EB
   
-  "$pc";               # stringifies to: WC1H 9EB
-  $pc->fixed_format;   # 8 characters, the incode always last three
-
   $pc->strict;     # true if matches strict regex
   $pc->valid;      # true if matches strict regex and has a valid outcode
   $pc->partial;    # true if postcode is for a district or sector only
@@ -53,8 +55,6 @@ An attempt to make a useful package for dealing with UK Postcodes.
 See L<Geo::UK::Postcode::Regex> for matching and parsing postcodes.
 
 Currently in development - feedback welcome.
-
-See L<Geo::UK::Postcode::Regex> for more postcode parsing.
 
 =cut
 
@@ -92,6 +92,10 @@ sub BUILD {
 }
 
 =head1 METHODS
+
+=head2 raw
+
+Returns exact string that object was constructed from.
 
 =head2 as_string
 
