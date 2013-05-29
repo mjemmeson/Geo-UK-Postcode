@@ -8,13 +8,18 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
   use Geo::UK::Postcode;
   
-  my $pc = Geo::UK::Postcode->new( "WC1H 9EB" );
+  my $pc = Geo::UK::Postcode->new( "wc1h9eb" );
+  
+  $pc->raw;            # wc1h9eb - as entered
+  $pc->as_string;      # WC1H 9EB - output in correct format
+  "$pc";               # stringifies, same output as '->as_string'
+  $pc->fixed_format;   # 8 characters, the incode always last three
   
   $pc->area;           # WC
   $pc->district;       # 1
@@ -25,9 +30,6 @@ version 0.002
   $pc->outcode;        # WC1H
   $pc->incode;         # 9EB
   
-  "$pc";               # stringifies to: WC1H 9EB
-  $pc->fixed_format;   # 8 characters, the incode always last three
-
   $pc->strict;     # true if matches strict regex
   $pc->valid;      # true if matches strict regex and has a valid outcode
   $pc->partial;    # true if postcode is for a district or sector only
@@ -48,11 +50,13 @@ See L<Geo::UK::Postcode::Regex> for matching and parsing postcodes.
 
 Currently in development - feedback welcome.
 
-See L<Geo::UK::Postcode::Regex> for more postcode parsing.
-
 =for Pod::Coverage BUILDARGS BUILD
 
 =head1 METHODS
+
+=head2 raw
+
+Returns exact string that object was constructed from.
 
 =head2 as_string
 

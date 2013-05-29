@@ -71,11 +71,11 @@
    "provides" : {
       "Geo::UK::Postcode" : {
          "file" : "lib/Geo/UK/Postcode.pm",
-         "version" : "0.002"
+         "version" : "0.003"
       },
       "Geo::UK::Postcode::Regex" : {
          "file" : "lib/Geo/UK/Postcode/Regex.pm",
-         "version" : "0.002"
+         "version" : "0.003"
       }
    },
    "release_status" : "stable",
@@ -90,6 +90,6 @@
          "web" : "https://github.com/mjemmeson/geo-uk-postcode"
       }
    },
-   "version" : "0.002"
+   "version" : "0.003"
 }
 
