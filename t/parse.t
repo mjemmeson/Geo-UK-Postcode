@@ -140,6 +140,16 @@ my %tests = (
         valid_outcode    => 1,
         non_geographical => 1,
     },
+    'SE1' => {
+        area          => 'SE',
+        district      => '1',
+        partial       => 1,
+        subdistrict   => undef,
+        sector        => undef,
+        unit          => undef,
+        strict        => 1,
+        valid_outcode => 1,
+        },
 );
 
 note "parse";
