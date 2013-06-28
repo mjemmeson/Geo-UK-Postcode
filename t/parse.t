@@ -153,20 +153,26 @@ my %tests = (
 );
 
 note "parse";
-
 test_parse( \%tests );
 
 note "parse - strict";
-
 test_parse( \%tests, { strict => 1 } );
 
 note "parse - valid";
-
 test_parse( \%tests, { valid => 1 } );
 
 note "parse - partial";
-
 test_parse( \%tests, { partial => 1 } );
+
+note "combinations - strict and valid";
+test_parse( \%tests, { strict => 1, valid => 1 } );
+
+note "combinations - strict and partial";
+test_parse( \%tests, { strict => 1, partial => 1 } );
+
+note "combinations - valid and partial";
+test_parse( \%tests, { valid => 1, partial => 1 } );
+
 
 sub msg {
     my ( $pc, $expected ) = @_;
