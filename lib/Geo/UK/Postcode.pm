@@ -242,7 +242,9 @@ sub posttowns { Geo::UK::Postcode::Regex->posttowns( $_[0]->outcode ) }
 
     my @sorted_pcs = sort pc_sort @unsorted_pcs;
 
-Exportable sort function, sorts postcode objects
+Exportable sort function, sorts postcode objects in a useful manner. The
+sort is in the following order: area, district, subdistrict, sector, unit
+(ascending alphabetical or numerical order as appropriate).
 
 =cut
 
