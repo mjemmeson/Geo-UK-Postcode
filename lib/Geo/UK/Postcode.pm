@@ -295,6 +295,10 @@ L<Form::Validator::UKPostcode>
 
 =item Find out which BX non-geographical districts are used.
 
+=item handle BFPO
+
+=item cleanup method to correct common errors
+
 =back
 
 =cut
