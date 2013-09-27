@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.003     2013-09-27 14:16:05 Europe/London
+
   - Bugfixing strict parsing regex.
 
 0.002     2013-05-22 09:35:16 Europe/London
