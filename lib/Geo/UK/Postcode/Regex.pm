@@ -19,12 +19,17 @@ use warnings;
   ## PARSING
   my $parsed = Geo::UK::Postcode::Regex->parse( "WC1H 9EB" );
   # returns:
-  #   { area        => 'WC',
-  #     district    => '1',
-  #     subdistrict => 'H',
-  #     sector      => '9',
-  #     unit        => 'EB',
-  #   }
+  # {   area             => 'WC',
+  #     district         => '1',
+  #     subdistrict      => 'H',
+  #     sector           => '9',
+  #     unit             => 'EB',
+  #     valid_outcode    => 1 | 0,
+  #     strict           => 1 | 0,
+  #     partial          => 1 | 0,
+  #     non_geographical => 1 | 0,
+  #     bfpo             => 1 | 0,
+  # }
   
   # strict parsing (only valid characters):
   ...->parse( $pc, { strict => 1 } )
@@ -61,30 +66,35 @@ L<https://en.wikipedia.org/wiki/Postcode_districts>
 
 ## REGULAR EXPRESSIONS
 
-my $AREA1       = 'ABCDEFGHIJKLMNOPRSTUWYZ';    # [^QVX]
-my $AREA2       = 'ABCDEFGHKLMNOPQRSTUVWXY';    # [^IJZ]
-my $SUBDISTRICT = 'ABCDEFGHJKMNPRSTUVWXY';      # [^ILOQ]
-my $UNIT1       = 'ABDEFGHJKSTUW';              #
-my $UNIT2       = 'ABDEFGHJLNPQRSTUWXYZ';
+my $AREA1 = 'ABCDEFGHIJKLMNOPRSTUWYZ';    # [^QVX]
+my $AREA2 = 'ABCDEFGHKLMNOPQRSTUVWXY';    # [^IJZ]
+
+my $SUBDISTRICT1 = 'ABCDEFGHJKSTUW';
+my $SUBDISTRICT2 = 'ABEHMNPRVWXY';
+
+my $UNIT1 = 'ABDEFGHJLNPQRSTUWXYZ';       # [^CIKMOV]
+my $UNIT2 = 'ABDEFGHJLNPQRSTUWXYZ';       # [^CIKMOV]
 
 my %COMPONENTS = (
     strict => {
-        area     => qr/[$AREA1][$AREA2]?/,
-        district => qr/[0-9](?:[0-9]|[$SUBDISTRICT])?/,
-        sector   => qr/[0-9]/,
-        unit     => qr/[$UNIT1][$UNIT2]/,
+        outcode => qr/(?:
+            ([$AREA1][$AREA2])([0-9][$SUBDISTRICT2]?)    |
+            ([$AREA1][$AREA2])([0-9][0-9]?)              |
+            ([$AREA1])([0-9][0-9]|[0-9][$SUBDISTRICT1]?)
+        )/x,
+        sector => qr/([0-9])/,
+        unit   => qr/([$UNIT1][$UNIT2])/,
     },
     loose => {
-        area     => qr/[A-Z]{1,2}/,
-        district => qr/[0-9](?:[0-9]|[A-Z])?/,
-        sector   => qr/[0-9]/,
-        unit     => qr/[A-Z]{2}/,
+        outcode  => qr/([A-Z]{1,2})([0-9](?:[0-9]|[A-Z])?)/,
+        sector   => qr/([0-9])/,
+        unit     => qr/([A-Z]{2})/,
     },
 );
 
 my %base_regexes = (
-    full    => '^ (%s) (%s) \s*     (%s) (%s)       $',
-    partial => '^ (%s) (%s) \s* (?: (%s) (%s) ? ) ? $',
+    full    => '^ %s \s*     %s %s       $',
+    partial => '^ %s \s* (?: %s %s ? ) ? $',
 );
 
 my %REGEXES;
@@ -95,7 +105,7 @@ foreach my $type (qw/ strict loose /) {
     foreach my $size (qw/ full partial /) {
         my $re = sprintf(
             $base_regexes{$size},
-            @{$components}{qw/ area district sector unit /}
+            @{$components}{qw/ outcode sector unit /}
         );
         $REGEXES{$type}->{$size} = qr/$re/x;
     }
@@ -236,6 +246,7 @@ sub parse {
         strict        => $strict,
         partial       => $unit ? 0 : 1,
         $outcode->{non_geographical} ? ( non_geographical => 1 ) : (),
+        "$area$district" eq "BF1"    ? ( bfpo             => 1 ) : (),
     };
 }
 

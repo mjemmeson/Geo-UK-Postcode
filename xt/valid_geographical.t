@@ -15,15 +15,16 @@ my $loose_re = $pkg->regex;
 
 my ( @failures, @strict_failures );
 
-if ( my ($file) = @ARGV ) {
-    my @pcs = read_file $file;
+my ($file) = @ARGV or die "No file";
 
-    foreach (@pcs) {
-        chomp;
-        s/\s+/ /;
-        push @failures,        $_ unless /$loose_re/;
-        push @strict_failures, $_ unless /$re/;
-    }
+
+my @pcs = read_file $file;
+
+foreach (@pcs) {
+    chomp;
+    s/\s+/ /;
+    push @failures,        $_ unless /$loose_re/;
+    push @strict_failures, $_ unless /$re/;
 }
 
 ok( !@failures, "all geographical postcodes passed loose regex" )

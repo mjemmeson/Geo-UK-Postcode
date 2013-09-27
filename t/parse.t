@@ -149,6 +149,18 @@ my %tests = (
         unit          => undef,
         strict        => 1,
         valid_outcode => 1,
+    },
+    'BF1 1AA' => {
+        area             => 'BF',
+        district         => '1',
+        partial          => 0,
+        subdistrict      => undef,
+        sector           => 1,
+        unit             => 'AA',
+        strict           => 1,
+        valid_outcode    => 1,
+        non_geographical => 1,
+        bfpo             => 1,
         },
 );
 

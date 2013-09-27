@@ -50,11 +50,15 @@ our @EXPORT_OK = qw/ pc_sort /;
 
 =head1 DESCRIPTION
 
-An attempt to make a useful package for dealing with UK Postcodes.
+An object to represent a British postcode.
 
-See L<Geo::UK::Postcode::Regex> for matching and parsing postcodes.
+For geo-location (finding latitude and longitude) see L</"GEO-LOCATING POSTCODES">.
 
-Currently in development - feedback welcome.
+For matching and parsing postcodes in a non-OO manner (for form
+validation, for example), see L<Geo::UK::Postcode::Regex>
+
+Currently undef development - feedback welcome. Basic API unlikely to change,
+just more features/more postcodes supported - see L</TODO> list.
 
 =cut
 
@@ -226,6 +230,18 @@ sub non_geographical {
     $_[0]->components->{non_geographical} ? 1 : 0;
 }
 
+=head2 bfpo
+
+    if ($pc->bfpo) {
+        ...
+    }
+
+=cut
+
+sub bfpo {
+    $_[0]->outcode eq 'BF1' ? 1 : 0;
+}
+
 =head2 posttowns
 
     my (@posttowns) = $postcode->posttowns;
@@ -254,6 +270,14 @@ sub pc_sort($$) {
         || ( $_[0]->subdistrict || '' ) cmp( $_[1]->subdistrict || '' )
         || ( $_[0]->incode || '' ) cmp( $_[1]->incode || '' );
 }
+
+=head1 GEO-LOCATING POSTCODES
+
+Postcodes can be geolocated by obtaining the Ordnance Survey 'Code-Point' data
+(or the free 'Code-Point Open' data).
+
+For full details of using this class with Code-Point data, see:
+L<Geo::UK::Postcode::Manual::Geolocation>.
 
 =head1 SEE ALSO
 
