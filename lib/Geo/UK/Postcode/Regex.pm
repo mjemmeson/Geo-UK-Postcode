@@ -69,32 +69,34 @@ L<https://en.wikipedia.org/wiki/Postcode_districts>
 my $AREA1 = 'ABCDEFGHIJKLMNOPRSTUWYZ';    # [^QVX]
 my $AREA2 = 'ABCDEFGHKLMNOPQRSTUVWXY';    # [^IJZ]
 
-my $SUBDISTRICT1 = 'ABCDEFGHJKSTUW';
-my $SUBDISTRICT2 = 'ABEHMNPRVWXY';
+my $SUBDISTRICT1 = 'ABCDEFGHJKSTUW';      # for single letter areas
+my $SUBDISTRICT2 = 'ABEHMNPRVWXY';        # for two letter areas
 
 my $UNIT1 = 'ABDEFGHJLNPQRSTUWXYZ';       # [^CIKMOV]
 my $UNIT2 = 'ABDEFGHJLNPQRSTUWXYZ';       # [^CIKMOV]
 
 my %COMPONENTS = (
     strict => {
-        outcode => qr/(?:
-            ([$AREA1][$AREA2])([0-9][$SUBDISTRICT2]?)    |
-            ([$AREA1][$AREA2])([0-9][0-9]?)              |
-            ([$AREA1])([0-9][0-9]|[0-9][$SUBDISTRICT1]?)
+        area     => qr/([$AREA1][$AREA2]?)/,
+        district => qr/(
+           (?:[0-9][$SUBDISTRICT1]? (?<![A-Z]{2}) ) |
+           (?:[0-9][$SUBDISTRICT2]  (?<=[A-Z]{2})  )|
+              [0-9][0-9]?
         )/x,
         sector => qr/([0-9])/,
         unit   => qr/([$UNIT1][$UNIT2])/,
     },
     loose => {
-        outcode  => qr/([A-Z]{1,2})([0-9](?:[0-9]|[A-Z])?)/,
+        area     => qr/([A-Z]{1,2})/,
+        district => qr/([0-9](?:[0-9]|[A-Z])?)/,
         sector   => qr/([0-9])/,
         unit     => qr/([A-Z]{2})/,
     },
 );
 
 my %base_regexes = (
-    full    => '^ %s \s*     %s %s       $',
-    partial => '^ %s \s* (?: %s %s ? ) ? $',
+    full    => '^ %s %s \s*     %s %s       $',
+    partial => '^ %s %s \s* (?: %s %s ? ) ? $',
 );
 
 my %REGEXES;
@@ -105,7 +107,7 @@ foreach my $type (qw/ strict loose /) {
     foreach my $size (qw/ full partial /) {
         my $re = sprintf(
             $base_regexes{$size},
-            @{$components}{qw/ outcode sector unit /}
+            @{$components}{qw/ area district sector unit /}
         );
         $REGEXES{$type}->{$size} = qr/$re/x;
     }
