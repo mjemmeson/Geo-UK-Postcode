@@ -79,9 +79,9 @@ my %COMPONENTS = (
     strict => {
         area     => qr/([$AREA1][$AREA2]?)/,
         district => qr/(
-           (?:[0-9][$SUBDISTRICT1]? (?<![A-Z]{2}) ) |
-           (?:[0-9][$SUBDISTRICT2]  (?<=[A-Z]{2})  )|
-              [0-9][0-9]?
+           (?: (?<![A-Z]{2}) [0-9]       [$SUBDISTRICT1]? ) |
+           (?: (?<=[A-Z]{2}) [0-9]       [$SUBDISTRICT2]  ) |
+                             [0-9][0-9]?
         )/x,
         sector => qr/([0-9])/,
         unit   => qr/([$UNIT1][$UNIT2])/,

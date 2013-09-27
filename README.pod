@@ -44,11 +44,15 @@ version 0.003
 
 =head1 DESCRIPTION
 
-An attempt to make a useful package for dealing with UK Postcodes.
+An object to represent a British postcode.
 
-See L<Geo::UK::Postcode::Regex> for matching and parsing postcodes.
+For geo-location (finding latitude and longitude) see L</"GEO-LOCATING POSTCODES">.
 
-Currently in development - feedback welcome.
+For matching and parsing postcodes in a non-OO manner (for form
+validation, for example), see L<Geo::UK::Postcode::Regex>
+
+Currently undef development - feedback welcome. Basic API unlikely to change,
+just more features/more postcodes supported - see L</TODO> list.
 
 =for Pod::Coverage BUILDARGS BUILD
 
@@ -133,6 +137,12 @@ geographical outcodes may have non-geographical postcodes within them.
 (Non-geographical postcodes are used for PO Boxes, or organisations
 receiving large amounts of post).
 
+=head2 bfpo
+
+    if ($pc->bfpo) {
+        ...
+    }
+
 =head2 posttowns
 
     my (@posttowns) = $postcode->posttowns;
@@ -145,7 +155,17 @@ Returns list of one or more posttowns that this postcode is assigned to.
 
     my @sorted_pcs = sort pc_sort @unsorted_pcs;
 
-Exportable sort function, sorts postcode objects
+Exportable sort function, sorts postcode objects in a useful manner. The
+sort is in the following order: area, district, subdistrict, sector, unit
+(ascending alphabetical or numerical order as appropriate).
+
+=head1 GEO-LOCATING POSTCODES
+
+Postcodes can be geolocated by obtaining the Ordnance Survey 'Code-Point' data
+(or the free 'Code-Point Open' data).
+
+For full details of using this class with Code-Point data, see:
+L<Geo::UK::Postcode::Manual::Geolocation>.
 
 =head1 SEE ALSO
 
@@ -187,6 +207,10 @@ L<Form::Validator::UKPostcode>
 
 =item Find out which BX non-geographical districts are used.
 
+=item handle BFPO
+
+=item cleanup method to correct common errors
+
 =back
 
 =for :stopwords cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders metacpan
@@ -211,6 +235,10 @@ L<https://github.com/mjemmeson/geo-uk-postcode>
 =head1 AUTHOR
 
 Michael Jemmeson <mjemmeson@cpan.org>
+
+=head1 CONTRIBUTOR
+
+Michael Jemmeson <michael.jemmeson@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
