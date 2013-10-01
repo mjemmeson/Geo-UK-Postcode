@@ -4,7 +4,7 @@
       "Michael Jemmeson <mjemmeson@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300034, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -64,18 +64,19 @@
             "File::Temp" : "0",
             "List::Util" : "0",
             "Test::More" : "0",
-            "Test::Most" : "0"
+            "Test::Most" : "0",
+            "lib" : "0"
          }
       }
    },
    "provides" : {
       "Geo::UK::Postcode" : {
          "file" : "lib/Geo/UK/Postcode.pm",
-         "version" : "0.003"
+         "version" : "0.004"
       },
       "Geo::UK::Postcode::Regex" : {
          "file" : "lib/Geo/UK/Postcode/Regex.pm",
-         "version" : "0.003"
+         "version" : "0.004"
       }
    },
    "release_status" : "stable",
@@ -90,7 +91,7 @@
          "web" : "https://github.com/mjemmeson/geo-uk-postcode"
       }
    },
-   "version" : "0.003",
+   "version" : "0.004",
    "x_contributors" : [
       "Michael Jemmeson <michael.jemmeson@cpan.org>"
    ]
