@@ -77,26 +77,26 @@ my $UNIT2 = 'ABDEFGHJLNPQRSTUWXYZ';       # [^CIKMOV]
 
 my %COMPONENTS = (
     strict => {
-        area     => qr/([$AREA1][$AREA2]?)/,
-        district => qr/(
+        area     => qr/[$AREA1][$AREA2]?/,
+        district => qr/
            (?: (?<![A-Z]{2}) [0-9]       [$SUBDISTRICT1]? ) |
            (?: (?<=[A-Z]{2}) [0-9]       [$SUBDISTRICT2]  ) |
                              [0-9][0-9]?
-        )/x,
-        sector => qr/([0-9])/,
-        unit   => qr/([$UNIT1][$UNIT2])/,
+        /x,
+        sector => qr/[0-9]/,
+        unit   => qr/[$UNIT1][$UNIT2]/,
     },
     loose => {
-        area     => qr/([A-Z]{1,2})/,
-        district => qr/([0-9](?:[0-9]|[A-Z])?)/,
-        sector   => qr/([0-9])/,
-        unit     => qr/([A-Z]{2})/,
+        area     => qr/[A-Z]{1,2}/,
+        district => qr/[0-9](?:[0-9]|[A-Z])?/,
+        sector   => qr/[0-9]/,
+        unit     => qr/[A-Z]{2}/,
     },
 );
 
 my %base_regexes = (
-    full    => '^ %s %s \s*     %s %s       $',
-    partial => '^ %s %s \s* (?: %s %s ? ) ? $',
+    full    => '^ (%s) (%s) \s*     (%s) (%s)       $',
+    partial => '^ (%s) (%s) \s* (?: (%s) (%s) ? ) ? $',
 );
 
 my %REGEXES;
