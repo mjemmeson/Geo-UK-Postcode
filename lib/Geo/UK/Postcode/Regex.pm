@@ -77,20 +77,20 @@ my $UNIT2 = 'ABDEFGHJLNPQRSTUWXYZ';       # [^CIKMOV]
 
 my %COMPONENTS = (
     strict => {
-        area     => qr/[$AREA1][$AREA2]?/,
-        district => qr/
+        area     => "[$AREA1][$AREA2]?",
+        district => qq%
            (?: (?<![A-Z]{2}) [0-9]       [$SUBDISTRICT1]? ) |
            (?: (?<=[A-Z]{2}) [0-9]       [$SUBDISTRICT2]  ) |
                              [0-9][0-9]?
-        /x,
-        sector => qr/[0-9]/,
-        unit   => qr/[$UNIT1][$UNIT2]/,
+        %,
+        sector => '[0-9]',
+        unit   => "[$UNIT1][$UNIT2]",
     },
     loose => {
-        area     => qr/[A-Z]{1,2}/,
-        district => qr/[0-9](?:[0-9]|[A-Z])?/,
-        sector   => qr/[0-9]/,
-        unit     => qr/[A-Z]{2}/,
+        area     => '[A-Z]{1,2}',
+        district => '[0-9](?:[0-9]|[A-Z])?',
+        sector   => '[0-9]',
+        unit     => '[A-Z]{2}',
     },
 );
 
