@@ -13,11 +13,11 @@ dies_ok { $pkg->new() } "dies with no argument";
 
 foreach my $test ( TestGeoUKPostcode->test_pcs() ) {
 
-    test_pc( { %{$test}, raw => $_ } )
-        foreach TestGeoUKPostcode->get_format_list( $test->{raw} );
+    my @pcs = TestGeoUKPostcode->get_format_list($test);
 
-    test_pc( { %{$test}, raw => lc $_ } )
-        foreach TestGeoUKPostcode->get_format_list( $test->{raw} );
+    test_pc( { %{$test}, raw => $_ } ) foreach @pcs;
+
+    test_pc( { %{$test}, raw => lc $_ } ) foreach @pcs;
 }
 
 sub test_pc {

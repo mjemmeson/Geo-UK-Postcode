@@ -202,6 +202,14 @@ sub test_parse {
 
         if ($expected) {
 
+            $expected->{outcode} = sprintf( "%s%s%s",
+                $expected->{area}, $expected->{district},
+                $expected->{subdistrict} || '' );
+
+            $expected->{incode} = sprintf( "%s%s",
+                $expected->{sector} || '',
+                $expected->{unit}   || '' );
+
             $expected->{valid_outcode} ||= 0;
             $expected->{partial}       ||= 0;
             $expected->{strict}        ||= 0;

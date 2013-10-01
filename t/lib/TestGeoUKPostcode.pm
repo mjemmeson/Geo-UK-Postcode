@@ -58,33 +58,31 @@ my @TEST_PCS = (
         strict           => 1,
         non_geographical => 0,
     },
-    {   raw              => 'SE1 0LH',
-        area             => 'SE',
-        district         => '1',
-        subdistrict      => undef,
-        sector           => '0',
-        unit             => 'LH',
-        outcode          => 'SE1',
-        incode           => '0LH',
-        fixed_format     => 'SE1  0LH',
-        valid            => 1,
-        partial          => 0,
-        strict           => 1,
-        non_geographical => 0,
+    {   raw          => 'SE1 0LH',
+        area         => 'SE',
+        district     => '1',
+        subdistrict  => undef,
+        sector       => '0',
+        unit         => 'LH',
+        outcode      => 'SE1',
+        incode       => '0LH',
+        fixed_format => 'SE1  0LH',
+        valid        => 1,
+        partial      => 0,
+        strict       => 1,
     },
-    {   raw              => 'WC1H 9',
-        area             => 'WC',
-        district         => '1',
-        subdistrict      => 'H',
-        sector           => '9',
-        unit             => undef,
-        outcode          => 'WC1H',
-        incode           => '9',
-        fixed_format     => 'WC1H 9  ',
-        valid            => 1,
-        partial          => 1,
-        strict           => 1,
-        non_geographical => 0,
+    {   raw          => 'WC1H 9',
+        area         => 'WC',
+        district     => '1',
+        subdistrict  => 'H',
+        sector       => '9',
+        unit         => undef,
+        outcode      => 'WC1H',
+        incode       => '9',
+        fixed_format => 'WC1H 9  ',
+        valid        => 1,
+        partial      => 1,
+        strict       => 1,
     },
     {   raw              => 'AB99 1AA',
         area             => 'AB',
@@ -115,6 +113,33 @@ my @TEST_PCS = (
         non_geographical => 1,
         bfpo             => 1,
     },
+    {   raw          => 'B11',
+        area         => 'B',
+        district     => '11',
+        subdistrict  => undef,
+        sector       => undef,
+        unit         => undef,
+        outcode      => 'B11',
+        incode       => '',
+        fixed_format => 'B11     ',
+        valid        => 1,
+        partial      => 1,
+        strict       => 1,
+    },
+    {   raw          => 'B1 1',
+        needs_space  => 1,
+        area         => 'B',
+        district     => '1',
+        subdistrict  => undef,
+        sector       => '1',
+        unit         => undef,
+        outcode      => 'B1',
+        incode       => '1',
+        fixed_format => 'B1   1  ',
+        valid        => 1,
+        partial      => 1,
+        strict       => 1,
+    },
 );
 
 sub test_pcs {
@@ -132,15 +157,17 @@ sub test_pcs {
 sub get_format_list {
     my ( $class, $pc ) = @_;
 
-    my $tmp = $pc;
+    my $tmp = $pc->{raw};
 
     my @list = ($tmp);
 
     $tmp =~ s/ /  /;
     push @list, $tmp;
 
-    $tmp =~ s/ //g;
-    push @list, $tmp;
+    unless ( $pc->{needs_space} ) {
+        $tmp =~ s/ //g;
+        push @list, $tmp;
+    }
 
     return @list;
 }
