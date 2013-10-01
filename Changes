@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  - Valid regex added (tests against valid outcodes)
+  - Bugfixing regexes, documentation, tests
+
 0.003     2013-09-27 14:16:05 Europe/London
 
   - Bugfixing strict parsing regex.
