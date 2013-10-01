@@ -33,54 +33,70 @@ use warnings;
         my ( $outcode, $sector, $unit ) = ( $1, $2, $3 );
         ...
     }
-
-  ## PARSING
-  my $parsed = Geo::UK::Postcode::Regex->parse( "WC1H 9EB" );
-  # returns:
-  # {   area             => 'WC',
-  #     district         => '1',
-  #     subdistrict      => 'H',
-  #     sector           => '9',
-  #     unit             => 'EB',
-  #     outcode          => 'WC1H',
-  #     incode           => '9EB',
-  #     valid_outcode    => 1 | 0,
-  #     strict           => 1 | 0,
-  #     partial          => 1 | 0,
-  #     non_geographical => 1 | 0,
-  #     bfpo             => 1 | 0,
-  # }
-  
-  # strict parsing (only valid characters):
-  ...->parse( $pc, { strict => 1 } )
-  
-  # valid outcodes only
-  ...->parse( $pc, { valid => 1 } )
-  
-  # match partial postcodes, e.g. 'WC1H', 'WC1H 9'
-  ...->parse( $pc, { partial => 1 } )  
-
-  ## EXTRACT OUTCODE
-  my $outcode = Geo::UK::Postcode::Regex->outcode( "AB101AA" );
-  # returns:
-  #   'AB10'
-  
-  ## POSTTOWNS
-  my (@posttowns) = Geo::UK::Postcode::Regex->posttowns( $pc );
+    
+    
+    ## PARSING
+    my $parsed = Geo::UK::Postcode::Regex->parse("WC1H 9EB");
+    
+    # returns:
+    # {   area             => 'WC',
+    #     district         => '1',
+    #     subdistrict      => 'H',
+    #     sector           => '9',
+    #     unit             => 'EB',
+    #     outcode          => 'WC1H',
+    #     incode           => '9EB',
+    #     valid_outcode    => 1 | 0,
+    #     strict           => 1 | 0,
+    #     partial          => 1 | 0,
+    #     non_geographical => 1 | 0,
+    #     bfpo             => 1 | 0,
+    # }
+    
+    # strict parsing (only valid characters):
+    ...->parse( $pc, { strict => 1 } )
+    
+    # valid outcodes only
+    ...->parse( $pc, { valid => 1 } )
+    
+    # match partial postcodes, e.g. 'WC1H', 'WC1H 9'
+    ...->parse( $pc, { partial => 1 } )
+    
+    
+    ## EXTRACT OUTCODE
+    my $outcode = Geo::UK::Postcode::Regex->outcode("AB101AA"); # returns 'AB10'
+    
+    my $outcode = Geo::UK::Postcode::Regex->outcode( $postcode, { valid => 1 } )
+        or die "Invalid postcode";
+    
+    
+    ## POSTTOWNS
+    my (@posttowns) = Geo::UK::Postcode::Regex->outcode_to_posttowns($outcode);
+    
+    
+    ## OUTCODES
+    my (@outcodes) = Geo::UK::Postcode::Regex->posttown_to_outcodes($posttown);
 
 =head1 DESCRIPTION
 
-Parsing UK postcodes with regular expressions. This package can
-be used separately to avoid the overhead of loading any
-dependencies.
+Parsing UK postcodes with regular expressions. This package can be used
+separately to avoid the overhead of loading any dependencies.
 
-Can handle partial postcodes (just the outcode or sector) and
-can test against valid characters and currently valid outcodes.
+Can handle partial postcodes (just the outcode or sector) and can test
+against valid characters and currently valid outcodes.
 
 Also can determine the posttown(s) from a postcode.
 
 Districts and post town information taken from:
 L<https://en.wikipedia.org/wiki/Postcode_districts>
+
+=head1 NOTES AND LIMITATIONS
+
+When parsing a partial postcode, whitespace may be required to separate the
+outcode from the sector.
+
+For example the sector 'B1 1' cannot be distinguished from the district 'B11'
+without whitespace.
 
 =cut
 
@@ -314,11 +330,10 @@ Second argument is a hashref of options - see C<parse()>
 sub outcode {
     my ( $class, $string, $options ) = @_;
 
-    my $parsed
-        = $class->parse( $string, { %{ $options || {} }, partial => 1 } )
+    my $parsed = $class->parse( $string, { partial => 1, %{ $options || {} } } )
         or return;
 
-    return $parsed->{area} . $parsed->{district};
+    return $parsed->{outcode};
 }
 
 =head2 outcode_to_posttowns
