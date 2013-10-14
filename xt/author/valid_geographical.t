@@ -10,8 +10,8 @@ use Geo::UK::Postcode::Regex;
 
 my $pkg = 'Geo::UK::Postcode::Regex';
 
-my $re       = $pkg->strict_regex;
-my $loose_re = $pkg->regex;
+my $re     = $pkg->strict_regex;
+my $lax_re = $pkg->regex;
 
 my ( @failures, @strict_failures );
 
@@ -21,16 +21,16 @@ my @pcs = read_file $file;
 
 foreach (@pcs) {
     chomp;
-    push @failures,        $_ unless /$loose_re/;
+    push @failures,        $_ unless /$lax_re/;
     push @strict_failures, $_ unless /$re/;
 
     # try without space
     s/\s+/ /;
-    push @failures,        $_ unless /$loose_re/;
+    push @failures,        $_ unless /$lax_re/;
     push @strict_failures, $_ unless /$re/;
 }
 
-ok( !@failures, "all geographical postcodes passed loose regex" )
+ok( !@failures, "all geographical postcodes passed lax regex" )
     or warn Dumper( [ sort @failures ] );
 
 ok( !@strict_failures, "all geographical postcodes passed strict regex" )

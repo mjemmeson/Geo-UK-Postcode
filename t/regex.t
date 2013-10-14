@@ -2,7 +2,7 @@
 
 use Test::Most;
 
-use Geo::UK::Postcode::Regex;
+use Geo::UK::Postcode::Regex qw/ is_valid_pc is_strict_pc is_lax_pc /;
 
 use lib 't/lib';
 use TestGeoUKPostcode;
@@ -23,7 +23,22 @@ foreach my $test ( TestGeoUKPostcode->test_pcs ) {
         note $pc;
 
         unless ( $test->{partial} ) {
-            ok $pc =~ $re, "$pc matches loose regex";
+
+	    if ($test->{strict}) {
+		ok is_strict_pc( $pc ), "is_strict_pc true";
+	    } else {
+		ok !is_strict_pc( $pc ), "is_strict_pc false";
+	    }
+
+	    if ($test->{valid}) {
+		ok is_valid_pc( $pc ), "is_valid_pc true";
+	    } else {
+		ok !is_valid_pc( $pc ), "is_valid_pc false";
+	    }
+
+	    ok is_lax_pc( $pc ), "is_lax_pc true";
+
+            ok $pc =~ $re, "$pc matches lax regex";
 
             if ( $test->{strict} ) {
                 ok $pc =~ $strict_re, "$pc matches strict regex";
@@ -38,7 +53,7 @@ foreach my $test ( TestGeoUKPostcode->test_pcs ) {
             }
         }
 
-        ok $pc =~ $re_partial, "$pc matches loose regex partial";
+        ok $pc =~ $re_partial, "$pc matches lax regex partial";
 
         if ( $test->{strict} ) {
             ok $pc =~ $strict_re_partial, "$pc matches strict regex partial";

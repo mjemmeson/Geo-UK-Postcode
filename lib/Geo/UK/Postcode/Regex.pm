@@ -3,6 +3,9 @@ package Geo::UK::Postcode::Regex;
 use strict;
 use warnings;
 
+use base 'Exporter';
+our @EXPORT_OK = qw/ is_valid_pc is_strict_pc is_lax_pc /;
+
 # ABSTRACT: regular expressions for handling British postcodes
 
 # VERSION
@@ -13,11 +16,11 @@ use warnings;
     
     ## REGULAR EXPRESSIONS
     
-    my $loose_re  = Geo::UK::Postcode::Regex->regex;
+    my $lax_re    = Geo::UK::Postcode::Regex->regex;
     my $strict_re = Geo::UK::Postcode::Regex->regex_strict;
     my $valid_re  = Geo::UK::Postcode::Regex->valid_regex;
     
-    if ( $foo =~ $loose_re ) {
+    if ( $foo =~ $lax_re ) {
         my ( $area, $district, $sector, $unit ) = ( $1, $2, $3, $4 );
         my $subdistrict = $district =~ s/([A-Z])$// ? $1 : undef;
         ...
@@ -33,7 +36,19 @@ use warnings;
         my ( $outcode, $sector, $unit ) = ( $1, $2, $3 );
         ...
     }
+
+    # VALIDATION METHODS
+    use Geo::UK::Postcode::Regex qw/ is_valid_pc is_strict_pc is_lax_pc /;
     
+    if (is_valid_pc("GE0 1UK")) {
+        ...
+    }
+    if (is_strict_pc("GE0 1UK")) {
+        ...
+    }
+    if (is_lax_pc("GE0 1UK")) {
+        ...
+    }
     
     ## PARSING
     my $parsed = Geo::UK::Postcode::Regex->parse("WC1H 9EB");
@@ -122,7 +137,7 @@ my %COMPONENTS = (
         sector => '[0-9]',
         unit   => "[$UNIT1][$UNIT2]",
     },
-    loose => {
+    lax => {
         area     => '[A-Z]{1,2}',
         district => '[0-9](?:[0-9]|[A-Z])?',
         sector   => '[0-9]',
@@ -139,7 +154,7 @@ my %base_regexes = (
 
 my %REGEXES;
 
-foreach my $type (qw/ strict loose /) {
+foreach my $type (qw/ strict lax /) {
     my $components = $COMPONENTS{$type};
 
     foreach my $size (qw/ full partial /) {
@@ -220,7 +235,7 @@ C<valid_regex> checks that the outcode currently exists.
 =cut
 
 sub strict_regex { $REGEXES{strict}->{full} }
-sub regex        { $REGEXES{loose}->{full} }
+sub regex        { $REGEXES{lax}->{full} }
 
 sub valid_regex {
     shift->_outcode_data() unless %OUTCODES_FOR_REGEX;
@@ -235,11 +250,29 @@ or sector
 =cut
 
 sub strict_regex_partial { $REGEXES{strict}->{partial} }
-sub regex_partial        { $REGEXES{loose}->{partial} }
+sub regex_partial        { $REGEXES{lax}->{partial} }
 
 sub valid_regex_partial {
     shift->_outcode_data() unless %OUTCODES_FOR_REGEX;
     return $REGEXES{valid}->{partial};
+}
+
+=head2 is_valid_pc, is_strict_pc, is_lax_pc
+
+    if (is_valid_pc( "AB1 2CD" ) ) { ... }
+
+Alternative way to access the regexes.
+
+=cut
+
+sub is_valid_pc {
+    return shift =~ $REGEXES{valid}->{full} ? 1 : 0
+}
+sub is_strict_pc {
+    return shift =~ $REGEXES{strict}->{full} ? 1 : 0
+}
+sub is_lax_pc {
+    return shift =~ $REGEXES{lax}->{full} ? 1 : 0
 }
 
 =head2 parse
@@ -285,9 +318,9 @@ sub parse {
     unless ($strict) {
         return if $options->{strict};
 
-        # try loose regex
+        # try lax regex
         ( $area, $district, $sector, $unit )
-            = $string =~ $REGEXES{loose}->{$size}
+            = $string =~ $REGEXES{lax}->{$size}
             or return;
     }
 

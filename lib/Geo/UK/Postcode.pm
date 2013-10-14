@@ -18,6 +18,8 @@ our @EXPORT_OK = qw/ pc_sort /;
 
 =head1 SYNOPSIS
 
+  # See Geo::UK::Postcode::Regex for parsing/matching postcodes
+
   use Geo::UK::Postcode;
   
   my $pc = Geo::UK::Postcode->new( "wc1h9eb" );
@@ -52,13 +54,13 @@ our @EXPORT_OK = qw/ pc_sort /;
 
 An object to represent a British postcode.
 
+For matching and parsing postcodes in a non-OO manner (for form validation, for
+example), see L<Geo::UK::Postcode::Regex>
+
 For geo-location (finding latitude and longitude) see L</"GEO-LOCATING POSTCODES">.
 
-For matching and parsing postcodes in a non-OO manner (for form
-validation, for example), see L<Geo::UK::Postcode::Regex>
-
-Currently undef development - feedback welcome. Basic API unlikely to change,
-just more features/more postcodes supported - see L</TODO> list.
+Currently undef development - feedback welcome. Basic API unlikely to change
+greatly, just more features/more postcodes supported - see L</TODO> list.
 
 =cut
 
@@ -99,7 +101,7 @@ sub BUILD {
 
 =head2 raw
 
-Returns exact string that object was constructed from.
+Returns exact string that the object was constructed from.
 
 =head2 as_string
 
@@ -235,6 +237,9 @@ sub non_geographical {
     if ($pc->bfpo) {
         ...
     }
+
+Returns true if postcode is mapped to a BFPO number (British Forces Post
+Office).
 
 =cut
 
