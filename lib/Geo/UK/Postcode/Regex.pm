@@ -215,7 +215,7 @@ sub _outcode_data {
             $COMPONENTS{strict}->{sector},
             $COMPONENTS{strict}->{unit}
         );
-        $REGEXES{valid}->{$size} = qr/$re/x;
+        $REGEXES{valid}->{$size} = qr/$re/ix;
     }
 }
 
