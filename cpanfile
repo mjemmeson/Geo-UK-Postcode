@@ -1,5 +1,5 @@
 requires "Exporter" => "0";
-requires "Geo::UK::Postcode::Regex" => "0";
+requires "Geo::UK::Postcode::Regex" => "0.005";
 requires "Moo" => "0";
 requires "MooX::Aliases" => "0";
 requires "base" => "0";
