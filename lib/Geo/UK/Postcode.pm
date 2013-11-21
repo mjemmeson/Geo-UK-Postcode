@@ -290,23 +290,15 @@ L<Geo::UK::Postcode::Manual::Geolocation>.
 
 =item *
 
+L<Geo::UK::Postcode::Regex>
+
+=item *
+
 L<Geo::Address::Mail::UK>
 
 =item *
 
 L<Geo::Postcode>
-
-=item *
-
-L<Data::Validation::Constraints::Postcode>
-
-=item *
-
-L<CGI::Untaint::uk_postcode>
-
-=item *
-
-L<Form::Validator::UKPostcode>
 
 =back
 
