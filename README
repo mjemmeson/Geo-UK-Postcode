@@ -148,15 +148,11 @@ GEO-LOCATING POSTCODES
     Geo::UK::Postcode::Manual::Geolocation.
 
 SEE ALSO
+    *   Geo::UK::Postcode::Regex
+
     *   Geo::Address::Mail::UK
 
     *   Geo::Postcode
-
-    *   Data::Validation::Constraints::Postcode
-
-    *   CGI::Untaint::uk_postcode
-
-    *   Form::Validator::UKPostcode
 
 TODO
     Finalise API
