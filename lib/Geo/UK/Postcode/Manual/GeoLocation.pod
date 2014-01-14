@@ -1,0 +1,35 @@
+=pod
+
+=head1 NAME
+
+Geo::UK::Postcode::Manual::GeoLocation
+
+=head1 DESCRIPTION
+
+Short guide to finding locations of UK postcodes.
+
+=head1 PROCESS
+
+=head2 Obtaining data
+
+Data is available in CSV format from Ordnance Survey. The free located postcodes
+data is called 'Code-Point Open'.
+
+Follow the steps on the site to be emailed a download link for a ZIP file
+(~15MB).
+
+L<http://www.ordnancesurvey.co.uk/business-and-government/products/code-point-open.html>
+
+The licence the data is provided under is L<http://www.ordnancesurvey.co.uk/business-and-government/licensing/using-creating-data-with-os-products/os-opendata.html>
+
+=head2 Importing the data
+
+
+
+
+
+
+
+
+=cut
+
