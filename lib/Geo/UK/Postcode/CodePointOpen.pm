@@ -1,10 +1,71 @@
 package Geo::UK::Postcode::CodePointOpen;
 
-use strict;
-use warnings;
+use Moo;
+use Types::Path::Tiny qw/ Dir /;
 
+use Geo::UK::Postcode::Regex;
 use Geo::Coordinates::OSGB qw/ grid_to_ll shift_ll_into_WGS84 /;
 use Text::CSV;
+
+my $pc_re = Geo::UK::Postcode::Regex->strict_regex;
+
+has path => ( is => 'ro', isa => Dir, coerce => Dir->coercion );
+has column_headers => ( is => 'lazy' );
+has csv            => ( is => 'lazy' );
+has metadata => (is => 'lazy');
+
+sub _build_column_headers {
+    my $self = shift;
+
+    my $fh = $self->doc_dir->child('Code-Point_Open_Column_Headers.csv')
+        ->filehandle('<');
+
+    return {
+        short => $self->csv->getline($fh),
+        long  => $self->csv->getline($fh),
+    };
+}
+
+sub _build_csv {
+    my $csv = Text::CSV->new( { binary => 1, eol => "\r\n" } )
+        or die Text::CSV->error_diag();
+    return $csv;
+}
+
+# ORDNANCE SURVEY
+# PRODUCT: OS CODE-POINT_OPEN
+# DATASET VERSION NUMBER: 2013.4.0
+# COPYRIGHT DATE: 20131027
+# RM UPDATE DATE: 20131018
+#       AB\t16644
+sub _build_metadata {
+    my $self = shift;
+
+    my $metadata_file = $self->doc_dir->child('metadata.txt');
+
+    my @lines = $metadata_file->lines( { chomp => 1 } );
+
+    my $author = shift @lines;
+
+    my @headers = grep {/:/} @lines;
+    my @counts  = grep {/\t/} @lines;
+
+    return {
+        author => $author,
+        ( map { split /:/ } @headers ),
+        counts =>
+            { map { /\s+([A-Z]{1,2})\t(\d+)/ ? ( $1, $2 ) : () } @counts },
+    };
+}
+
+sub doc_dir {
+    shift->path->child('Doc');
+}
+
+sub data_dir {
+    shift->path->child('Data/CSV');
+}
+
 
 =head1 NAME
 
@@ -14,74 +75,69 @@ Geo::UK::Postcode::CodePointOpen
 
     use Geo::UK::Postcode::CodePointOpen;
 
-    my $iterator = Geo::UK::Postcode::CodePointOpen->read( path => ... );
+    my $code_point_open = Geo::UK::Postcode::CodePointOpen->new( path => ... );
 
+    my $metadata = $code_point_open->metadata();
+
+    my $iterator = $code_point_open->read_iterator();
     while (my $pc = $iterator->()) {
         ...
     }
 
 =head1 DESCRIPTION
 
+Util object to read OS Code-Point Open data.
+
 =head1 METHODS
 
-=head2 read
+=head2 new
 
-    my $iterator = Geo::UK::Postcode::CodePointOpen->read(
-        path               => ...,  # path to Unzipped Code-Point Open directory
-        short_column_names => 1,    # default is false (long names)
-        include_lat_long   => 1,    # default is false
+    my $code_point_open = Geo::UK::Postcode::CodePointOpen->new(
+        path => ...,    # path to Unzipped Code-Point Open directory
     );
 
-Pass in the path containing the 'Doc' and 'Data' subdirectories.
+Constructor.
+
+=head2 read_iterator
+
+    my $iterator = $code_point_open->read_iterator(
+        short_column_names => 1,    # default is false (long names)
+        include_lat_long   => 1,    # default is false
+        split_postcode     => 1,    # split into outcode/incode
+    );
 
 Returns a coderef iterator. Call repeatedly to get a hashref of data for each
 postcode in data files.
 
 =cut
 
-sub read {
-    my ( $class, %args ) = @_;
+sub read_iterator {
+    my ( $self, %args ) = @_;
 
-    my $path = $args{path};
-    die "Path missing or invalid" unless $path && -d $path;
-
-    my $csv = Text::CSV->new( { binary => 1, eol => "\r\n" } )
-        or die Text::CSV->error_diag();
-
-    my $doc_dir  = "$path/Doc";
-    my $data_dir = "$path/Data/CSV";
-
-    # Get column headers
-    my $headers_file = "$doc_dir/Code-Point_Open_Column_Headers.csv";
-    open my $fh, '<', $headers_file or die "Can't open $headers_file: $!";
-
-    my $short_col_names = $csv->getline($fh);
-    my $long_col_names  = $csv->getline($fh);
-
-    my @col_names
-        = @{ $args{short_column_names} ? $short_col_names : $long_col_names };
-    my ( $lat_col, $lon_col )
-        = $args{short_column_names}
-        ? ( 'LA', 'LO' )
-        : ( 'Latitude', 'Longitude' );
+    my ( @col_names, $lat_col, $lon_col, $out_col, $in_col );
+    if ( $args{short_column_names} ) {
+        @col_names = @{ $self->column_headers->{short} };
+        ( $lat_col, $lon_col ) = ( 'LA', 'LO' );
+        ( $out_col, $in_col )  = ( 'OC', 'IC' );
+    } else {
+        @col_names = @{ $self->column_headers->{long} };
+        ( $lat_col, $lon_col ) = ( 'Latitude', 'Longitude' );
+        ( $out_col, $in_col )  = ( 'Outcode',  'Incode' );
+    }
 
     # Get list of data files
-    opendir( my $dh, $data_dir ) or die "can't opendir $data_dir: $!";
-    my @data_files = grep { /^[^.]/ && -f "$data_dir/$_" } readdir($dh);
-    closedir $dh;
-    @data_files = sort @data_files;
+    my @data_files = sort $self->data_dir->children(qr/\.csv$/);
 
     # Create iterator coderef
     my $fh2;
-
-    my $next_file = sub {
-        my $file = shift @data_files or return;    # none left
-        open( $fh2, '<', "$data_dir/$file" ) or die "Can't open $file: $!";
-    };
+    my $csv = $self->csv;
 
     my $iterator = sub {
 
-        $next_file->() unless ( $fh2 && !eof $fh2 );
+        unless ( $fh2 && !eof $fh2 ) {
+            my $file = shift @data_files or return;    # none left
+            $fh2 = $file->filehandle('<');
+        }
 
         my $row = $csv->getline($fh2);
 
@@ -89,11 +145,34 @@ sub read {
         my $pc = { map { $_ => $row->[ $i++ ] } @col_names };
 
         if ( $args{include_lat_long} ) {
-            my ( $lat, $lon )
-                = shift_ll_into_WGS84( grid_to_ll( $row->[2], $row->[3] ) );
+            if ( $row->[2] && $row->[3] ) {
+                my ( $lat, $lon )
+                    = shift_ll_into_WGS84( grid_to_ll( $row->[2], $row->[3] ) );
 
-            $pc->{$lat_col} = sprintf( "%.5f", $lat );
-            $pc->{$lon_col} = sprintf( "%.5f", $lon );
+                $pc->{$lat_col} = sprintf( "%.5f", $lat );
+                $pc->{$lon_col} = sprintf( "%.5f", $lon );
+            }
+        }
+
+        if ( $args{split_postcode} ) {
+
+            $row->[0] =~ s/\s+/ /;
+
+            my ( $area, $district, $sector, $unit )
+                = eval { $row->[0] =~ $pc_re };
+
+            if ( $@
+                || !( $area && defined $district && defined $sector && $unit ) )
+            {
+                die "Unable to parse '"
+                    . $row->[0]
+                    . "' : Please report via "
+                    . "https://github.com/mjemmeson/Geo-UK-Postcode-Regex/issues\n";
+
+            } else {
+                $pc->{$out_col} = $area . $district;
+                $pc->{$in_col}  = $sector . $unit;
+            }
         }
 
         return $pc;
@@ -101,8 +180,6 @@ sub read {
 
     return $iterator;
 }
-
-
 
 1;
 

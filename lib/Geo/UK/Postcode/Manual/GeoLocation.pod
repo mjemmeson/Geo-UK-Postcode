@@ -8,9 +8,10 @@ Geo::UK::Postcode::Manual::GeoLocation
 
 =head1 DESCRIPTION
 
-Short guide to finding locations of UK postcodes.
+Short guide to finding locations of UK postcodes, using the freely available
+Code-Point Open data available from the Ordnance Survey.
 
-=head1 PROCESS
+=head1 EXAMPLE PROCESS
 
 =head2 Obtaining data
 
@@ -26,12 +27,10 @@ The licence the data is provided under is L<http://www.ordnancesurvey.co.uk/busi
 
 =head2 Importing the data
 
+L<Geo::UK::Postcode::CodePointOpen> provides a C<read()> method to iterate
+through the CSV data files, returning a hashref for each postcode.
 
-
-
-
-
-
+This data can then be inserted as a row into a data store.
 
 =cut
 
