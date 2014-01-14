@@ -1,3 +1,5 @@
+# PODNAME: GeoLocation.pod
+
 =pod
 
 =head1 NAME
