@@ -27,10 +27,20 @@ The licence the data is provided under is L<http://www.ordnancesurvey.co.uk/busi
 
 =head2 Importing the data
 
-L<Geo::UK::Postcode::CodePointOpen> provides a C<read()> method to iterate
-through the CSV data files, returning a hashref for each postcode.
+L<Geo::UK::Postcode::CodePointOpen> provides a C<read_iterator()> method to
+iterate through the CSV data files, returning a hashref for each postcode.
 
 This data can then be inserted as a row into a data store.
+
+Example database MySQL table definition:
+
+    CREATE TABLE `gb_postcodes` (
+      `outcode` char(4) NOT NULL,
+      `incode` char(3) NOT NULL DEFAULT '',
+      `latitude` decimal(7,5) DEFAULT NULL,
+      `longitude` decimal(7,5) DEFAULT NULL,
+      PRIMARY KEY (`outcode`,`incode`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 =cut
 

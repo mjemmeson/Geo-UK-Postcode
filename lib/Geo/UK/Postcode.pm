@@ -21,23 +21,23 @@ our @EXPORT_OK = qw/ pc_sort /;
   # See Geo::UK::Postcode::Regex for parsing/matching postcodes
 
   use Geo::UK::Postcode;
-  
+
   my $pc = Geo::UK::Postcode->new( "wc1h9eb" );
-  
+
   $pc->raw;            # wc1h9eb - as entered
   $pc->as_string;      # WC1H 9EB - output in correct format
   "$pc";               # stringifies, same output as '->as_string'
   $pc->fixed_format;   # 8 characters, the incode always last three
-  
+
   $pc->area;           # WC
   $pc->district;       # 1
   $pc->subdistrict;    # H
   $pc->sector;         # 9
   $pc->unit;           # EB
-  
+
   $pc->outcode;        # WC1H
   $pc->incode;         # 9EB
-  
+
   $pc->strict;     # true if matches strict regex
   $pc->valid;      # true if matches strict regex and has a valid outcode
   $pc->partial;    # true if postcode is for a district or sector only
@@ -47,7 +47,7 @@ our @EXPORT_OK = qw/ pc_sort /;
 
   # Sort Postcode objects:
   use Geo::UK::Postcode qw/ pc_sort /;
-  
+
   my @sorted_pcs = sort pc_sort @unsorted_pcs;
 
 =head1 DESCRIPTION
@@ -57,7 +57,8 @@ An object to represent a British postcode.
 For matching and parsing postcodes in a non-OO manner (for form validation, for
 example), see L<Geo::UK::Postcode::Regex>
 
-For geo-location (finding latitude and longitude) see L</"GEO-LOCATING POSTCODES">.
+For geo-location (finding latitude and longitude) see
+L</"GEO-LOCATING POSTCODES">.
 
 Currently undef development - feedback welcome. Basic API unlikely to change
 greatly, just more features/more postcodes supported - see L</TODO> list.
