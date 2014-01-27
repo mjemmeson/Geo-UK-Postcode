@@ -157,8 +157,7 @@ and unit. Returns an empty string if not present.
 =cut
 
 sub outcode {
-    sprintf( "%s%s%s",
-        $_[0]->area, $_[0]->district, $_[0]->subdistrict || '' );
+    $_[0]->area . $_[0]->district . ( $_[0]->subdistrict || '' );
 }
 
 sub incode {
