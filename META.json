@@ -89,7 +89,7 @@
          "web" : "https://github.com/mjemmeson/Geo-UK-Postcode"
       }
    },
-   "version" : "0.007",
+   "version" : "0.008",
    "x_contributors" : [
       "Michael Jemmeson <michael.jemmeson@cpan.org>"
    ]
