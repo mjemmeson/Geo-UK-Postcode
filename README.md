@@ -8,25 +8,25 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
 
     use Geo::UK::Postcode;
 
-    my $pc = Geo::UK::Postcode->new( "wc1h9eb" );
+    my $pc = Geo::UK::Postcode->new("wc1h9eb");
 
-    $pc->raw;            # wc1h9eb - as entered
-    $pc->as_string;      # WC1H 9EB - output in correct format
-    "$pc";               # stringifies, same output as '->as_string'
-    $pc->fixed_format;   # 8 characters, the incode always last three
+    $pc->raw;             # wc1h9eb - as entered
+    $pc->as_string;       # WC1H 9EB - output in correct format
+    "$pc";                # stringifies, same output as '->as_string'
+    $pc->fixed_format;    # 8 characters, the incode always last three
 
-    $pc->area;           # WC
-    $pc->district;       # 1
-    $pc->subdistrict;    # H
-    $pc->sector;         # 9
-    $pc->unit;           # EB
+    $pc->area;            # WC
+    $pc->district;        # 1
+    $pc->subdistrict;     # H
+    $pc->sector;          # 9
+    $pc->unit;            # EB
 
-    $pc->outcode;        # WC1H
-    $pc->incode;         # 9EB
+    $pc->outcode;         # WC1H
+    $pc->incode;          # 9EB
 
-    $pc->strict;     # true if matches strict regex
-    $pc->valid;      # true if matches strict regex and has a valid outcode
-    $pc->partial;    # true if postcode is for a district or sector only
+    $pc->strict;          # true if matches strict regex
+    $pc->valid;           # true if matches strict regex and has a valid outcode
+    $pc->partial;         # true if postcode is for a district or sector only
 
     $pc->non_geographical;    # true if outcode is known to be
                               # non-geographical
@@ -94,7 +94,7 @@ Aliases for `outcode` and `incode`.
 ## valid
 
     if ($pc->valid) {
-      ...
+        ...
     }
 
 Returns true if postcode has valid outcode and matches strict regex.
