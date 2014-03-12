@@ -8,13 +8,15 @@ use Geo::UK::Postcode::Regex;
 
 use overload '""' => "as_string";
 
-# ABSTRACT: Object and class methods for working with British postcodes.
-
-# VERSION
+our $VERSION = '0.006';
 
 our @EXPORT_OK = qw/ pc_sort /;
 
-=pod
+=encoding utf-8
+
+=head1 NAME
+
+Geo::UK::Postcode - Object and class methods for working with British postcodes.
 
 =head1 SYNOPSIS
 
@@ -203,7 +205,7 @@ Returns true if postcode matches strict regex, meaning all characters are valid
 =cut
 
 sub valid {
-    $_[0]->components->{valid_outcode} && $_[0]->components->{strict} ? 1 : 0;
+    $_[0]->components->{valid} ? 1 : 0;
 }
 
 sub partial {
@@ -302,25 +304,18 @@ L<Geo::Postcode>
 
 =back
 
-=head1 TODO
+=head1 AUTHOR
 
-=over
+Michael Jemmeson E<lt>mjemmeson@cpan.orgE<gt>
 
-=item Finalise API
+=head1 COPYRIGHT
 
-=item Handle non-geographic postcodes
+Copyright 2014- Michael Jemmeson
 
-=item Handle British overseas territories
+=head1 LICENSE
 
-=item Handle special case postcodes, like GIR 0AA and SAN TA1
-
-=item Find out which BX non-geographical districts are used.
-
-=item handle BFPO
-
-=item cleanup method to correct common errors
-
-=back
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
 

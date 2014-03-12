@@ -2,6 +2,12 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  - Requirement on Geo::UK::Postcode::Regex 0.012 added
+  - Bugfixing tests - inconsistant undef/empty string depending on ::Regex version
+  
+  [Maintenance]
+  - switching to Dist::Milla, including Build.PL
+
 0.006     2013-12-20 12:58:37 Europe/London
 
   - Tidy, test tweaks, and added Geo::UK::Postcode::Regex 0.005 prereq

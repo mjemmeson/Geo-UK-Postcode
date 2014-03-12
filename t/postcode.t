@@ -13,8 +13,9 @@ dies_ok { $pkg->new() } "dies with no argument";
 
 foreach my $test ( TestGeoUKPostcode->test_pcs() ) {
 
-    subtest( $_ => sub { test_pc( { %{$test}, raw => $_ } ) } )
-        foreach TestGeoUKPostcode->get_format_list($test);
+    foreach ( TestGeoUKPostcode->get_format_list($test)) {
+        subtest( $_ => sub { test_pc( { %{$test}, raw => $_ } ) } );
+    }
 
 }
 
@@ -46,11 +47,7 @@ sub test_pc {
 
     is "$pc", $str, "stringify ok";
 
-    my $valid = $test->{valid_outcode} && $test->{strict} ? 1 : 0;
-    is $pc->valid, $valid,
-        $valid ? "postcode is valid" : "postcode isn't valid";
-
-    foreach (qw/ strict partial non_geographical /) {
+    foreach (qw/ valid strict partial non_geographical /) {
         is $pc->$_, $test->{$_} || 0,
             $test->{$_} ? "postcode is $_" : "postcode isn't $_";
     }
