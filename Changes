@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  [Maintenance]
+  - removing outdated dzil READMEs (replacing with README.md from Dist::Milla)
+
 0.007  2014-03-12 17:45:54 GMT
 
   - Requirement on Geo::UK::Postcode::Regex 0.012 added
