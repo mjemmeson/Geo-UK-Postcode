@@ -42,5 +42,10 @@ Example database MySQL table definition:
       PRIMARY KEY (`outcode`,`incode`)
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
+For simple lookups, one could alternatively use a key/value store - concatenate
+the outcode and incode (with a separator) into the key, and the latitude and
+longitude (again with a separator) into the value.
+
+
 =cut
 

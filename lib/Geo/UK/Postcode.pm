@@ -20,37 +20,37 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
 
 =head1 SYNOPSIS
 
-  # See Geo::UK::Postcode::Regex for parsing/matching postcodes
+    # See Geo::UK::Postcode::Regex for parsing/matching postcodes
 
-  use Geo::UK::Postcode;
+    use Geo::UK::Postcode;
 
-  my $pc = Geo::UK::Postcode->new( "wc1h9eb" );
+    my $pc = Geo::UK::Postcode->new("wc1h9eb");
 
-  $pc->raw;            # wc1h9eb - as entered
-  $pc->as_string;      # WC1H 9EB - output in correct format
-  "$pc";               # stringifies, same output as '->as_string'
-  $pc->fixed_format;   # 8 characters, the incode always last three
+    $pc->raw;             # wc1h9eb - as entered
+    $pc->as_string;       # WC1H 9EB - output in correct format
+    "$pc";                # stringifies, same output as '->as_string'
+    $pc->fixed_format;    # 8 characters, the incode always last three
 
-  $pc->area;           # WC
-  $pc->district;       # 1
-  $pc->subdistrict;    # H
-  $pc->sector;         # 9
-  $pc->unit;           # EB
+    $pc->area;            # WC
+    $pc->district;        # 1
+    $pc->subdistrict;     # H
+    $pc->sector;          # 9
+    $pc->unit;            # EB
 
-  $pc->outcode;        # WC1H
-  $pc->incode;         # 9EB
+    $pc->outcode;         # WC1H
+    $pc->incode;          # 9EB
 
-  $pc->strict;     # true if matches strict regex
-  $pc->valid;      # true if matches strict regex and has a valid outcode
-  $pc->partial;    # true if postcode is for a district or sector only
+    $pc->strict;          # true if matches strict regex
+    $pc->valid;           # true if matches strict regex and has a valid outcode
+    $pc->partial;         # true if postcode is for a district or sector only
 
-  $pc->non_geographical;    # true if outcode is known to be
-                            # non-geographical
+    $pc->non_geographical;    # true if outcode is known to be
+                              # non-geographical
 
-  # Sort Postcode objects:
-  use Geo::UK::Postcode qw/ pc_sort /;
+    # Sort Postcode objects:
+    use Geo::UK::Postcode qw/ pc_sort /;
 
-  my @sorted_pcs = sort pc_sort @unsorted_pcs;
+    my @sorted_pcs = sort pc_sort @unsorted_pcs;
 
 =head1 DESCRIPTION
 
@@ -108,11 +108,11 @@ Returns exact string that the object was constructed from.
 
 =head2 as_string
 
-  $pc->as_string;
+    $pc->as_string;
 
-  # or:
+    # or:
 
-  "$pc";
+    "$pc";
 
 Stringification of postcode object, returns postcode with a single space
 between outcode and incode.
@@ -177,17 +177,17 @@ alias inward  => 'incode';
 
 =head2 valid
 
-  if ($pc->valid) {
-    ...
-  }
+    if ($pc->valid) {
+        ...
+    }
 
 Returns true if postcode has valid outcode and matches strict regex.
 
 =head2 partial
 
-  if ($pc->partial) {
-    ...
-  }
+    if ($pc->partial) {
+      ...
+    }
 
 Returns true if postcode is not a full postcode, either a postcode district
 ( e . g . AB10 )
@@ -195,9 +195,9 @@ or postcode sector (e.g. AB10 1).
 
 =head2 strict
 
-  if ($pc->strict) {
-    ...
-  }
+    if ($pc->strict) {
+      ...
+    }
 
 Returns true if postcode matches strict regex, meaning all characters are valid
 ( although postcode might not exist ) .
