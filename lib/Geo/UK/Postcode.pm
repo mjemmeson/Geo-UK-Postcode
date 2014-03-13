@@ -304,6 +304,23 @@ L<Geo::Postcode>
 
 =back
 
+=head1 SUPPORT
+
+=head2 Bugs / Feature Requests
+
+Please report any bugs or feature requests through the issue tracker
+at L<https://github.com/mjemmeson/geo-uk-postcode/issues>.
+You will be notified automatically of any progress on your issue.
+
+=head2 Source Code
+
+This is open source software.  The code repository is available for
+public review and contribution under the terms of the license.
+
+L<https://github.com/mjemmeson/geo-uk-postcode>
+
+    git clone git://github.com/mjemmeson/geo-uk-postcode.git
+
 =head1 AUTHOR
 
 Michael Jemmeson E<lt>mjemmeson@cpan.orgE<gt>
