@@ -67,13 +67,7 @@ greatly, just more features/more postcodes supported - see L</TODO> list.
 
 =cut
 
-has raw => (
-    is  => 'ro',
-    isa => sub {
-        die "Empty or invalid value passed to 'raw'" unless $_[0] && !ref $_[0];
-    },
-);
-
+has raw => ( is => 'ro' );    # Str
 has components => (
     is      => 'rwp',
     default => sub { {} },
@@ -86,18 +80,22 @@ has components => (
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
 
-    return $class->$orig(    #
-        ref $args ? $args : { raw => $args }
-    );
+    unless ( ref $args ) {
+        $args = { raw => $args };
+    }
+
+    return $class->$orig($args);
 };
 
 sub BUILD {
     my ($self) = @_;
 
+    die "No raw postcode supplied" unless $self->raw;
+
     my $pc = uc $self->raw;
 
     my $parsed = Geo::UK::Postcode::Regex->parse( $pc, { partial => 1 } )
-        or die sprintf( "Unable to parse '%s' as a postcode", $self->raw );
+        or die sprintf "Unable to parse '%s' as a postcode", $self->raw ;
 
     $self->_set_components($parsed);
 }
