@@ -2,6 +2,13 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  [Bugfix]
+  - fixing broken posttowns() method
+
+  [Maintenance]
+  - Improve test coverage
+  - POD tweaks  
+
 0.008  2014-03-12 17:51:35 GMT
 
   [Maintenance]
