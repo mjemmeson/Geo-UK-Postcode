@@ -205,7 +205,7 @@ my @TEST_PCS = (
         valid        => 0,
         partial      => 1,
         strict       => 1,
-        posttowns     => [],
+        posttowns    => [],
     },
     {   raw          => 'SE1',
         area         => 'SE',
@@ -280,7 +280,7 @@ my @TEST_PCS = (
         valid        => 1,
         partial      => 1,
         strict       => 1,
-        posttowns     => [],
+        posttowns    => ['BIRMINGHAM'],
     },
     {   raw          => 'B1 1',
         needs_space  => 1,
@@ -293,7 +293,7 @@ my @TEST_PCS = (
         valid        => 1,
         partial      => 1,
         strict       => 1,
-        posttowns     => [],
+        posttowns    => ['BIRMINGHAM'],
     },
 
     {   raw          => 'N1 0XX',
@@ -305,7 +305,7 @@ my @TEST_PCS = (
         fixed_format => 'N1   0XX',
         valid        => 1,
         strict       => 1,
-        posttowns     => ['LONDON'],
+        posttowns    => ['LONDON'],
     },
     {   raw              => 'N1P 2NG',
         area             => 'N',
@@ -332,6 +332,12 @@ my @TEST_PCS = (
         posttowns        => ['LONDON'],
     },
 );
+
+sub test_pcs_raw {
+    my $class = shift;
+
+    return map { $_->{raw} } @TEST_PCS;
+}
 
 sub test_pcs {
     my ( $class, $args ) = @_;

@@ -11,7 +11,19 @@ my $pkg = 'Geo::UK::Postcode';
 
 dies_ok { $pkg->new() } "dies with no argument";
 
+note "full postcodes";
+
 foreach my $test ( TestGeoUKPostcode->test_pcs() ) {
+
+    foreach ( TestGeoUKPostcode->get_format_list($test)) {
+        subtest( $_ => sub { test_pc( { %{$test}, raw => $_ } ) } );
+    }
+
+}
+
+note "partial postcodes";
+
+foreach my $test ( TestGeoUKPostcode->test_pcs({ partial => 1}) ) {
 
     foreach ( TestGeoUKPostcode->get_format_list($test)) {
         subtest( $_ => sub { test_pc( { %{$test}, raw => $_ } ) } );
@@ -42,7 +54,8 @@ sub test_pc {
 
     is $pc->fixed_format, $test->{fixed_format}, "fixed format ok";
 
-    my $str = $test->{outcode} . ' ' . $test->{incode};
+    my $str = $test->{outcode};
+    $str .= ' ' . $test->{incode} if $test->{incode};
     is $pc->as_string, $str, "as_string ok";
 
     is "$pc", $str, "stringify ok";

@@ -127,7 +127,7 @@ between outcode and incode.
 
 =cut
 
-sub as_string { $_[0]->outcode . ' ' . $_[0]->incode }
+sub as_string { $_[0]->outcode . ( $_[0]->incode ? ' ' . $_[0]->incode : '' ) }
 
 =head2 fixed_format
 
