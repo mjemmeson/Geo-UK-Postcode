@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  [Maintenance]
+  - POD tweaks / more methods in synopsis
+
 0.009  2015-01-16 12:38:50 GMT
 
   [Bugfix]

@@ -47,6 +47,11 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
     $pc->non_geographical;    # true if outcode is known to be
                               # non-geographical
 
+    $pc->bfpo;                # true if postcode is for a BFPO address
+
+    my @posttowns = $pc->posttowns;    # list of one or more 'post towns'
+                                       # associated with this postcode
+
     # Sort Postcode objects:
     use Geo::UK::Postcode qw/ pc_sort /;
 
@@ -57,13 +62,10 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
 An object to represent a British postcode.
 
 For matching and parsing postcodes in a non-OO manner (for form validation, for
-example), see L<Geo::UK::Postcode::Regex>
+example), see L<Geo::UK::Postcode::Regex> or L<Geo::UK::Postcode::Regex::Simple>.
 
 For geo-location (finding latitude and longitude) see
 L</"GEO-LOCATING POSTCODES">.
-
-Currently undef development - feedback welcome. Basic API unlikely to change
-greatly, just more features/more postcodes supported - see L</TODO> list.
 
 =head1 ATTRIBUTES
 
@@ -261,11 +263,16 @@ sub bfpo {
 
     my (@posttowns) = $postcode->posttowns;
 
-Returns list of one or more posttowns that this postcode is assigned to.
+Returns list of one or more 'post towns' that this postcode is assigned to.
+
+Post towns are rarely used today, and are no longer required in a postal address
+but are included with the postcode data, so provided here.
 
 =cut
 
-sub posttowns { Geo::UK::Postcode::Regex->outcode_to_posttowns( $_[0]->outcode ) }
+sub posttowns {
+    Geo::UK::Postcode::Regex->outcode_to_posttowns( $_[0]->outcode );
+}
 
 =head1 EXPORTABLE
 
@@ -285,6 +292,10 @@ sub pc_sort($$) {
         || ( $_[0]->subdistrict || '' ) cmp( $_[1]->subdistrict || '' )
         || ( $_[0]->incode || '' ) cmp( $_[1]->incode || '' );
 }
+
+1;
+
+__END__
 
 =head1 GEO-LOCATING POSTCODES
 
@@ -343,6 +354,4 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;
 
