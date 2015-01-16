@@ -65,6 +65,12 @@ L</"GEO-LOCATING POSTCODES">.
 Currently undef development - feedback welcome. Basic API unlikely to change
 greatly, just more features/more postcodes supported - see L</TODO> list.
 
+=head1 ATTRIBUTES
+
+=head2 raw
+
+The exact string that the object was constructed from, without formatting.
+
 =cut
 
 has raw => (
@@ -74,14 +80,15 @@ has raw => (
     },
 );
 
+=for Pod::Coverage BUILDARGS BUILD components
+
+=cut
+
+# private - hashref to hold parsed components of postcode
 has components => (
     is      => 'rwp',
     default => sub { {} },
 );
-
-=for Pod::Coverage BUILDARGS BUILD
-
-=cut
 
 around BUILDARGS => sub {
     my ( $orig, $class, $args ) = @_;
@@ -106,7 +113,6 @@ sub BUILD {
 
 =head2 raw
 
-Returns exact string that the object was constructed from.
 
 =head2 as_string
 
@@ -259,7 +265,7 @@ Returns list of one or more posttowns that this postcode is assigned to.
 
 =cut
 
-sub posttowns { Geo::UK::Postcode::Regex->posttowns( $_[0]->outcode ) }
+sub posttowns { Geo::UK::Postcode::Regex->outcode_to_posttowns( $_[0]->outcode ) }
 
 =head1 EXPORTABLE
 

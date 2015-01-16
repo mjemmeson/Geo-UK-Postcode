@@ -49,11 +49,15 @@ For geo-location (finding latitude and longitude) see
 Currently undef development - feedback welcome. Basic API unlikely to change
 greatly, just more features/more postcodes supported - see ["TODO"](#todo) list.
 
-# METHODS
+# ATTRIBUTES
 
 ## raw
 
-Returns exact string that the object was constructed from.
+The exact string that the object was constructed from, without formatting.
+
+# METHODS
+
+## raw
 
 ## as\_string
 
@@ -168,6 +172,23 @@ For full details of using this class with Code-Point data, see:
 - [Geo::UK::Postcode::Regex](https://metacpan.org/pod/Geo::UK::Postcode::Regex)
 - [Geo::Address::Mail::UK](https://metacpan.org/pod/Geo::Address::Mail::UK)
 - [Geo::Postcode](https://metacpan.org/pod/Geo::Postcode)
+
+# SUPPORT
+
+## Bugs / Feature Requests
+
+Please report any bugs or feature requests through the issue tracker
+at [https://github.com/mjemmeson/geo-uk-postcode/issues](https://github.com/mjemmeson/geo-uk-postcode/issues).
+You will be notified automatically of any progress on your issue.
+
+## Source Code
+
+This is open source software.  The code repository is available for
+public review and contribution under the terms of the license.
+
+[https://github.com/mjemmeson/geo-uk-postcode](https://github.com/mjemmeson/geo-uk-postcode)
+
+    git clone git://github.com/mjemmeson/geo-uk-postcode.git
 
 # AUTHOR
 

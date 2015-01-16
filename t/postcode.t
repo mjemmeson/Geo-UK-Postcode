@@ -47,10 +47,12 @@ sub test_pc {
 
     is "$pc", $str, "stringify ok";
 
-    foreach (qw/ valid strict partial non_geographical /) {
+    foreach (qw/ valid strict partial non_geographical bfpo /) {
         is $pc->$_, $test->{$_} || 0,
             $test->{$_} ? "postcode is $_" : "postcode isn't $_";
     }
+
+    is_deeply [ $pc->posttowns ], $test->{posttowns} || [], "posttowns  ok";
 
 }
 
