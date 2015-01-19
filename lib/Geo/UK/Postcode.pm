@@ -61,8 +61,9 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
 
 An object to represent a British postcode.
 
-For matching and parsing postcodes in a non-OO manner (for form validation, for
-example), see L<Geo::UK::Postcode::Regex> or L<Geo::UK::Postcode::Regex::Simple>.
+For matching and parsing postcodes in a non-OO manner without the L<Moo>
+dependency (for form validation, for example), see L<Geo::UK::Postcode::Regex>
+or L<Geo::UK::Postcode::Regex::Simple>.
 
 For geo-location (finding latitude and longitude) see
 L</"GEO-LOCATING POSTCODES">.
