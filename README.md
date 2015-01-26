@@ -31,6 +31,11 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
     $pc->non_geographical;    # true if outcode is known to be
                               # non-geographical
 
+    $pc->bfpo;                # true if postcode is for a BFPO address
+
+    my @posttowns = $pc->posttowns;    # list of one or more 'post towns'
+                                       # associated with this postcode
+
     # Sort Postcode objects:
     use Geo::UK::Postcode qw/ pc_sort /;
 
@@ -40,14 +45,12 @@ Geo::UK::Postcode - Object and class methods for working with British postcodes.
 
 An object to represent a British postcode.
 
-For matching and parsing postcodes in a non-OO manner (for form validation, for
-example), see [Geo::UK::Postcode::Regex](https://metacpan.org/pod/Geo::UK::Postcode::Regex)
+For matching and parsing postcodes in a non-OO manner without the [Moo](https://metacpan.org/pod/Moo)
+dependency (for form validation, for example), see [Geo::UK::Postcode::Regex](https://metacpan.org/pod/Geo::UK::Postcode::Regex)
+or [Geo::UK::Postcode::Regex::Simple](https://metacpan.org/pod/Geo::UK::Postcode::Regex::Simple).
 
 For geo-location (finding latitude and longitude) see
 ["GEO-LOCATING POSTCODES"](#geo-locating-postcodes).
-
-Currently undef development - feedback welcome. Basic API unlikely to change
-greatly, just more features/more postcodes supported - see ["TODO"](#todo) list.
 
 # ATTRIBUTES
 
@@ -147,7 +150,10 @@ Office).
 
     my (@posttowns) = $postcode->posttowns;
 
-Returns list of one or more posttowns that this postcode is assigned to.
+Returns list of one or more 'post towns' that this postcode is assigned to.
+
+Post towns are rarely used today, and are no longer required in a postal address
+but are included with the postcode data, so provided here.
 
 # EXPORTABLE
 
