@@ -28,6 +28,7 @@ on 'configure' => sub {
 
 on 'develop' => sub {
   requires "Dist::Milla" => "0";
+  requires "Dist::Zilla::Plugin::MetaProvides" => 0;
   requires "File::Spec" => "0";
   requires "File::Temp" => "0";
   requires "IO::Handle" => "0";
