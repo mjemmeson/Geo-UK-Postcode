@@ -4,7 +4,7 @@
       "Michael Jemmeson <mjemmeson@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 5.025, Dist::Milla version v1.0.5, CPAN::Meta::Converter version 2.143240",
+   "generated_by" : "Dist::Zilla version 5.031, Dist::Milla version v1.0.14, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "perl_5"
    ],
@@ -32,12 +32,8 @@
       },
       "develop" : {
          "requires" : {
-            "Dist::Zilla" : "5.006",
-            "Dist::Zilla::Plugin::CopyFilesFromBuild" : "0",
-            "Dist::Zilla::Plugin::Prereqs" : "0",
-            "Dist::Zilla::Plugin::RunExtraTests" : "0",
-            "Dist::Zilla::PluginBundle::DAGOLDEN" : "0",
-            "Dist::Zilla::PluginBundle::Filter" : "0",
+            "Dist::Milla" : "v1.0.14",
+            "Dist::Zilla::Plugin::MetaProvides" : "0",
             "File::Spec" : "0",
             "File::Temp" : "0",
             "IO::Handle" : "0",
