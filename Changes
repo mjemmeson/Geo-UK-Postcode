@@ -2,6 +2,8 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.010  2015-02-11 14:31:53 GMT
+
   [Maintenance]
   - POD tweaks / more methods in synopsis
   - removed editor temp file

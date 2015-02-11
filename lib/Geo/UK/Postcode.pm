@@ -8,7 +8,7 @@ use Geo::UK::Postcode::Regex;
 
 use overload '""' => "as_string";
 
-our $VERSION = '0.009';
+our $VERSION = '0.010';
 
 our @EXPORT_OK = qw/ pc_sort /;
 
