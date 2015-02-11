@@ -4,6 +4,8 @@ Revision history for {{$dist->name}}
 
   [Maintenance]
   - POD tweaks / more methods in synopsis
+  - removed editor temp file
+  - correct Dist::Milla develop dependencies in cpanfile and META
 
 0.009  2015-01-16 12:38:50 GMT
 
