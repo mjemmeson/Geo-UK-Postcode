@@ -287,7 +287,7 @@ sort is in the following order: area, district, subdistrict, sector, unit
 
 =cut
 
-sub pc_sort($$) {
+sub pc_sort($$) {    ## no critic (Subroutines::ProhibitSubroutinePrototypes)
            $_[0]->area cmp $_[1]->area
         || $_[0]->district <=> $_[1]->district
         || ( $_[0]->subdistrict || '' ) cmp( $_[1]->subdistrict || '' )
