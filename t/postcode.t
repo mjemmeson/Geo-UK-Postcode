@@ -14,7 +14,7 @@ note "full postcodes";
 
 foreach my $test ( TestGeoUKPostcode->test_pcs() ) {
 
-    foreach ( TestGeoUKPostcode->get_format_list($test)) {
+    foreach ( TestGeoUKPostcode->get_format_list($test) ) {
         subtest( $_ => sub { test_pc( { %{$test}, raw => $_ } ) } );
     }
 
@@ -22,9 +22,9 @@ foreach my $test ( TestGeoUKPostcode->test_pcs() ) {
 
 note "partial postcodes";
 
-foreach my $test ( TestGeoUKPostcode->test_pcs({ partial => 1}) ) {
+foreach my $test ( TestGeoUKPostcode->test_pcs( { partial => 1 } ) ) {
 
-    foreach ( TestGeoUKPostcode->get_format_list($test)) {
+    foreach ( TestGeoUKPostcode->get_format_list($test) ) {
         subtest( $_ => sub { test_pc( { %{$test}, raw => $_ } ) } );
     }
 
