@@ -1,6 +1,4 @@
-# sort.t
-
-use Test::Most;
+use Test::More;
 
 use List::Util qw/ shuffle /;
 use Geo::UK::Postcode qw/ pc_sort /;
